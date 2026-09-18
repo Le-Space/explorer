@@ -18,7 +18,9 @@ html(lang=lang)
     - var ogTitle = m.title || settings.title
     - var ogDesc = m.description || (settings.coin + ' ' + settings.locale.ex_title)
     - var ogUrl = base + (m.path || '/')
-    - var ogImage = base + (m.image || '/images/le-space-og-image.png')
+    //- The card carries a German or English line, so it follows the page
+    //- language like everything else.
+    - var ogImage = base + (m.image || ('/images/og-explorer-' + (lang === 'de' ? 'de' : 'en') + '.png'))
     meta(property='og:site_name', content=settings.title)
     meta(property='og:type', content='website')
     meta(property='og:title', content=ogTitle)

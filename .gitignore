@@ -44,4 +44,5 @@ package-lock.json
 !public/apple-touch-icon.png
 !public/android-chrome-512x512.png
 !public/images/le-space-*.png
+!public/images/og-*.png
 !public/themes/le-space/thumbnail.png
