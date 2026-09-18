@@ -338,6 +338,7 @@ app.set('headerlogo', settings.headerlogo);
 // a value that is never app.set() here simply does not exist for a view.
 app.set('headerlogo_url', settings.headerlogo_url);
 app.set('headerlabel', settings.headerlabel || settings.coin);
+app.set('repo_url', settings.repo_url);
 // Our own css/js are linked without a version, so a browser -- and Cloudflare
 // in front of it -- keeps serving the old copy after a change. A stamp that
 // changes on every start makes the URL new, which is all a cache keys on.

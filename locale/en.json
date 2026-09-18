@@ -157,5 +157,8 @@
     "og_free_again": "free to register again",
     "og_registered_until": "registered until block",
     "og_unconfirmed": "unconfirmed",
-    "og_in_block": "in block"
+    "og_in_block": "in block",
+
+    // footer
+    "source_code": "Source code on GitHub"
 }
