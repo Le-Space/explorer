@@ -22,6 +22,9 @@
   // The logo is the company mark and leaves for the company site; the
   // product name beside it stays the way back to the explorer.
   "headerlogo_url": "https://le-space.de",
+  // Text beside the logo: the chain, not the product. The menu already says
+  // "Explorer". Unset falls back to "coin".
+  "headerlabel": "Doichain",
 
   // favicon
   "favicon": "public/favicon.ico",
