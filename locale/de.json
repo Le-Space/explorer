@@ -160,6 +160,7 @@
     "og_registered_until": "registriert bis Block",
     "og_unconfirmed": "unbestätigt",
     "og_in_block": "in Block",
+    "og_image_alt": "Doichain Explorer — Namen, Blöcke und Transaktionen",
 
     // footer
     "source_code": "Quelltext auf GitHub"
