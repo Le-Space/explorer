@@ -10,6 +10,28 @@ html(lang=lang)
     //- Brand icons and fonts (docs/le-space-brand in Le-Space/landing).
     //- Inter carries the UI, JetBrains Mono the identifiers -- hashes, addresses
     //- and names are read character by character.
+    //- Link preview for Twitter/X, Telegram, LinkedIn, Signal, Slack ... They all
+    //- read Open Graph; Twitter reads its own names as well. A page passes `meta`
+    //- to say something specific; everything else falls back to the site.
+    - var m = (typeof meta !== 'undefined' && meta) ? meta : {}
+    - var base = (typeof baseUrl !== 'undefined' ? baseUrl : '')
+    - var ogTitle = m.title || settings.title
+    - var ogDesc = m.description || (settings.coin + ' ' + settings.locale.ex_title)
+    - var ogUrl = base + (m.path || '/')
+    - var ogImage = base + (m.image || '/images/le-space-og-image.png')
+    meta(property='og:site_name', content=settings.title)
+    meta(property='og:type', content='website')
+    meta(property='og:title', content=ogTitle)
+    meta(property='og:description', content=ogDesc)
+    meta(property='og:url', content=ogUrl)
+    meta(property='og:image', content=ogImage)
+    meta(property='og:locale', content=(lang === 'de' ? 'de_DE' : 'en_US'))
+    meta(name='twitter:card', content='summary_large_image')
+    meta(name='twitter:title', content=ogTitle)
+    meta(name='twitter:description', content=ogDesc)
+    meta(name='twitter:image', content=ogImage)
+    meta(name='description', content=ogDesc)
+    link(rel='canonical', href=ogUrl)
     link(rel='icon', href='/favicon.ico', sizes='48x48')
     link(rel='icon', href='/favicon-32x32.png', type='image/png', sizes='32x32')
     link(rel='apple-touch-icon', href='/apple-touch-icon.png')

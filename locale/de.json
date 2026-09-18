@@ -152,5 +152,12 @@
     "heavy_estnext": "Nächste (geschätzt)",
     "heavy_changein": "Belohnung ändert sich in etwa",
     "heavy_key": "Schlüssel",
-    "heavy_lastxvotes": "Letzte 20 Stimmen"
+    "heavy_lastxvotes": "Letzte 20 Stimmen",
+
+    // link previews for shared name pages
+    "og_expired_since": "verfallen seit Block",
+    "og_free_again": "wieder frei zur Registrierung",
+    "og_registered_until": "registriert bis Block",
+    "og_unconfirmed": "unbestätigt",
+    "og_in_block": "in Block"
 }

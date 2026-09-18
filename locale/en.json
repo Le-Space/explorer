@@ -151,4 +151,11 @@
     "heavy_changein": "Reward change in approximately",
     "heavy_key": "Key",
     "heavy_lastxvotes": "Last 20 votes",
+
+    // link previews for shared name pages
+    "og_expired_since": "expired since block",
+    "og_free_again": "free to register again",
+    "og_registered_until": "registered until block",
+    "og_unconfirmed": "unconfirmed",
+    "og_in_block": "in block"
 }
