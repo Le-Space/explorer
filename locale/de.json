@@ -1,0 +1,156 @@
+/*
+  This file must be valid JSON. But comments are allowed
+
+  German locale. Technical terms that are read as identifiers in the UI (Hash,
+  Nonce, Bits, PoS) and the exchange names are deliberately left untranslated.
+*/
+{
+    // menu items
+    "menu_explorer": "Explorer",
+    "menu_api": "API",
+    "menu_markets": "Märkte",
+    "menu_richlist": "Top 100",
+    "menu_reward": "Belohnung",
+    "menu_movement": "Bewegungen",
+    "menu_node": "Knoten",
+    "menu_network": "Netzwerk",
+
+    // explorer
+    "ex_title": "Block-Explorer",
+    "ex_search_title": "Suche",
+    "ex_search_button": "Suchen",
+    "ex_search_message": "Gib eine Blockhöhe, einen Blockhash, eine Transaktions-ID, eine Adresse oder einen Namen ein.",
+    "ex_error": "Fehler!",
+    "ex_search_error": "Keine Treffer für: ",
+    "ex_latest_transactions": "Neueste Transaktionen",
+    "ex_summary": "Blockübersicht",
+    "ex_supply": "Umlaufmenge",
+    "ex_block": "Block",
+
+    // transaction
+    "tx_title": "Transaktionsdetails",
+    "tx_block_hash": "Blockhash",
+    "tx_recipients": "Empfänger",
+    "tx_contributors": "Eingangsadressen",
+    "tx_hash": "Hash",
+    "tx_address": "Adresse",
+    "tx_nonstandard": "NICHT-STANDARD-TRANSAKTION",
+
+    // block
+    "block_previous": "Vorheriger",
+    "block_next": "Nächster",
+    "block_title": "Blockdetails",
+    "block_genesis": "GENESIS",
+
+    // shared
+    "difficulty": "Schwierigkeit",
+    "network": "Netzwerk",
+    "height": "Höhe",
+    "timestamp": "Zeitstempel",
+    "size": "Größe",
+    "transactions": "Transaktionen",
+    "total_sent": "Gesendet gesamt",
+    "total_received": "Empfangen gesamt",
+    "confirmations": "Bestätigungen",
+    "total": "Gesamt",
+    "bits": "Bits",
+    "nonce": "Nonce",
+    "new_coins": "Neue Coins",
+    "proof_of_stake": "PoS",
+    "initial_index_alert": "Der Index ist noch unvollständig. Bis er aufgeholt hat, stehen nicht alle Funktionen zur Verfügung.",
+
+    // address
+    "a_menu_showing": "Zeigt die letzten",
+    "a_menu_txs": "Transaktionen",
+    "a_menu_all": "Alle",
+    "a_qr": "QR-Code",
+
+    // rich list
+    "rl_received_coins": "Top 100 – empfangene Coins",
+    "rl_current_balance": "Top 100 – aktuelles Guthaben",
+    "rl_received": "Empfangen",
+    "rl_balance": "Guthaben",
+    "rl_wealth": "Verteilung der Bestände",
+    "rl_top25": "Top 1–25",
+    "rl_top50": "Top 26–50",
+    "rl_top75": "Top 51–75",
+    "rl_top100": "Top 76–100",
+    "rl_hundredplus": "101+",
+
+    // network
+    "net_addnodes": "Knoten hinzufügen",
+    "net_connections": "Verbindungen",
+    "net_address": "Adresse",
+    "net_protocol": "Protokoll",
+    "net_subversion": "Unterversion",
+    "net_country": "Land",
+    "net_warning": "Dies ist nur ein Ausschnitt des Netzwerks: gezeigt werden Wallets, die sich in den letzten 24 Stunden mit diesem Knoten verbunden haben.",
+
+    // api
+    "api_title": "API-Dokumentation",
+    "api_message": "Der Block-Explorer bietet eine API, über die Nutzer und Anwendungen Informationen aus dem Netzwerk abrufen können, ohne eine eigene Wallet zu betreiben.",
+    "api_calls": "API-Aufrufe",
+    "api_getnetworkhashps": "Liefert die aktuelle Rechenleistung des Netzwerks (Hashes/s).",
+    "api_getdifficulty": "Liefert die aktuelle Schwierigkeit.",
+    "api_getconnectioncount": "Liefert die Anzahl der Verbindungen dieses Block-Explorers zu anderen Knoten.",
+    "api_getblockcount": "Liefert die aktuelle Blockhöhe.",
+    "api_getblockhash": "Liefert den Hash des Blocks an der angegebenen Höhe; Höhe 0 ist der Genesis-Block.",
+    "api_getblock": "Liefert Informationen zum Block mit dem angegebenen Hash.",
+    "api_getrawtransaction": "Liefert die Rohform einer Transaktion zur angegebenen Transaktions-ID. decrypt kann 0 (nein) oder 1 (ja) sein.",
+    "api_getmaxmoney": "Liefert die höchstmögliche Geldmenge.",
+    "api_getmaxvote": "Liefert die höchste zulässige Stimme für die aktuelle Abstimmungsphase.",
+    "api_getvote": "Liefert die aktuelle Einstellung zur Abstimmung über die Blockbelohnung.",
+    "api_getphase": "Liefert die aktuelle Abstimmungsphase („Mint“, „Limit“ oder „Sustain“).",
+    "api_getreward": "Liefert die aktuelle Blockbelohnung, die in der vorherigen Abstimmungsrunde festgelegt wurde.",
+    "api_getsupply": "Liefert die aktuelle Geldmenge.",
+    "api_getnextrewardestimate": "Liefert eine Schätzung der nächsten Blockbelohnung anhand des aktuellen Abstimmungsstands.",
+    "api_getnextrewardwhenstr": "Liefert einen Text dazu, wie lange es dauert, bis die Stimmen ausgezählt und die nächste Blockbelohnung berechnet ist.",
+
+    // markets
+    "mkt_hours": "24 Stunden",
+    "mkt_view_chart": "Zusammenfassung der letzten 24 Stunden",
+    "mkt_view_summary": "Diagramm der letzten 24 Stunden",
+    "mkt_no_chart": "Für diesen Markt liefert die API keine Diagrammdaten.",
+    "mkt_high": "Höchst",
+    "mkt_low": "Tiefst",
+    "mkt_volume": "Volumen",
+    "mkt_top_bid": "Höchstes Gebot",
+    "mkt_top_ask": "Niedrigste Forderung",
+    "mkt_last": "Letzter Preis",
+    "mkt_yesterday": "Gestern",
+    "mkt_change": "Veränderung",
+    "mkt_sell_orders": "Verkaufsaufträge",
+    "mkt_buy_orders": "Kaufaufträge",
+    "mkt_price": "Preis",
+    "mkt_amount": "Betrag",
+    "mkt_total": "Gesamt",
+    "mkt_trade_history": "Handelsverlauf",
+    "mkt_type": "Art",
+    "mkt_time_stamp": "Zeitstempel",
+
+    // exchange names stay as they are
+    "fides": "Fides-ex",
+    "poloniex": "Poloniex",
+    "bittrex": "Bittrex",
+    "altmarkets": "AltMarkets",
+    "bleutrade": "Bleutrade",
+    "yobit": "Yobit",
+    "empoex": "Empoex",
+    "cryptsy": "Cryptsy",
+    "ccex": "C-Cex",
+    "crex": "Crex24",
+    "tradesatoshi": "TradeSatoshi",
+
+    // heavy
+    "heavy_title": "Belohnung und Abstimmung",
+    "heavy_vote": "Stimme",
+    "heavy_cap": "Coin-Obergrenze",
+    "heavy_phase": "Phase",
+    "heavy_maxvote": "Höchste Stimme",
+    "heavy_reward": "Belohnung",
+    "heavy_current": "Aktuelle Belohnung",
+    "heavy_estnext": "Nächste (geschätzt)",
+    "heavy_changein": "Belohnung ändert sich in etwa",
+    "heavy_key": "Schlüssel",
+    "heavy_lastxvotes": "Letzte 20 Stimmen"
+}

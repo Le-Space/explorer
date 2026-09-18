@@ -2,6 +2,17 @@ doctype html
 html
   head
     title= settings.title
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    //- Brand icons and fonts (docs/le-space-brand in Le-Space/landing).
+    //- Inter carries the UI, JetBrains Mono the identifiers -- hashes, addresses
+    //- and names are read character by character.
+    link(rel='icon', href='/favicon.ico', sizes='48x48')
+    link(rel='icon', href='/favicon-32x32.png', type='image/png', sizes='32x32')
+    link(rel='apple-touch-icon', href='/apple-touch-icon.png')
+    link(rel='preconnect', href='https://fonts.googleapis.com')
+    link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin)
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap')
     link(rel='stylesheet', href='/themes/' + settings.theme + '/bootstrap.min.css')
     link(rel='stylesheet', href='/vendor/jqplot/jquery.jqplot.css')
     link(rel='stylesheet', href='/vendor/flags-css/css/flag-icon.min.css')
@@ -163,6 +174,15 @@ html
               a.nav-link(href='/info')
                 span.fa.fa-info-circle
                 span.menu-text #{settings.locale.menu_api}
+        //- Language switcher. The link keeps the page you are on and only adds
+        //- ?lang=, so a German page is shareable as such; the choice is also
+        //- remembered in a cookie by the middleware in app.js.
+        if languages && languages.length > 1
+          ul.navbar-nav.ml-auto
+            each code in languages
+              li(class=(code === lang ? 'active' : null))
+                a.nav-link(href=langUrl(code), hreflang=code, rel='alternate', title=langName(code), style=(code === lang ? 'font-weight:600;' : 'opacity:.75;'))
+                  span.menu-text=code.toUpperCase()
     .col-md-12
       .row.text-center.d-flex.justify-content-center
         .col-md-2
