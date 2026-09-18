@@ -23,6 +23,9 @@ html(lang=lang)
     link(rel='stylesheet', href='//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css')
     link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    //- Brand layer last: style.css sets a body font of its own and would
+    //- otherwise win over the theme.
+    link(rel='stylesheet', href='/stylesheets/le-space.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
     script(src='//stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js')
     script(src='/vendor/jqplot/jquery.jqplot.min.js')

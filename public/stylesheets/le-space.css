@@ -1,0 +1,91 @@
+/* ------------------------------------------------------------------------
+   Le-Space brand layer.
+   Palette and fonts from docs/le-space-brand/Le-Space-Brand-Style-Guide.pdf
+   in Le-Space/landing. Appended rather than merged so the base can be
+   replaced wholesale when Bootswatch is updated: everything below this line
+   is ours.
+   ------------------------------------------------------------------------ */
+:root {
+  --ls-deep-space: #0B0E15;   /* background      */
+  --ls-nebula:     #141926;   /* cards, panels   */
+  --ls-horizon:    #232B3D;   /* borders         */
+  --ls-starlight:  #EDF1F8;   /* headings        */
+  --ls-stardust:   #A8B3C7;   /* body text       */
+  --ls-coral:      #FF6B5B;   /* primary accent  */
+  --ls-cyan:       #58C7F3;   /* links, peers    */
+}
+
+body {
+  background-color: var(--ls-deep-space);
+  color: var(--ls-stardust);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, strong, .navbar-brand { color: var(--ls-starlight); }
+
+/* Identifiers -- hashes, addresses, names -- are read character by character,
+   which is what the wordmark font is for. */
+code, pre, .decimal, td a[href^="/tx/"], td a[href^="/block/"], td a[href^="/address/"], td a[href^="/name/"] {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+a { color: var(--ls-cyan); }
+a:hover, a:focus { color: #8ADBF7; }
+
+.nav.navbar, .navbar.footer { background-color: var(--ls-nebula) !important; border-bottom: 1px solid var(--ls-horizon); }
+.navbar.footer { border-bottom: 0; border-top: 1px solid var(--ls-horizon); }
+.navbar .nav-link { color: var(--ls-stardust); }
+.navbar .nav-link:hover, .navbar li.active > .nav-link { color: var(--ls-starlight); }
+
+.card, .card-body { background-color: var(--ls-nebula); border-color: var(--ls-horizon); }
+.card-header { background-color: #1A2133; border-bottom-color: var(--ls-horizon); color: var(--ls-starlight); }
+
+.table { color: var(--ls-stardust); }
+.table td, .table th { border-color: var(--ls-horizon); }
+.table thead th { color: var(--ls-starlight); border-bottom-color: var(--ls-horizon); }
+.table-striped tbody tr:nth-of-type(odd) { background-color: rgba(255, 255, 255, .025); }
+
+/* Semantic rows keep their meaning but stop shouting: a tint plus a left edge,
+   rather than a full-strength fill under monospace text. */
+.table-success, .table .table-success > td { background-color: rgba(62, 220, 151, .10) !important; box-shadow: inset 3px 0 0 #3EDC97; }
+.table-danger,  .table .table-danger  > td { background-color: rgba(255, 107, 91, .10) !important; box-shadow: inset 3px 0 0 var(--ls-coral); }
+.table-warning, .table .table-warning > td { background-color: rgba(255, 194, 75, .10) !important; box-shadow: inset 3px 0 0 #FFC24B; }
+.table-info,    .table .table-info    > td { background-color: rgba(88, 199, 243, .10) !important; }
+
+.btn-primary { background-color: var(--ls-coral); border-color: var(--ls-coral); color: #0B0E15; }
+.btn-primary:hover, .btn-primary:focus { background-color: #E8503F; border-color: #E8503F; color: #0B0E15; }
+.btn-link { color: var(--ls-cyan); }
+
+.badge-info { background-color: rgba(88, 199, 243, .18); color: var(--ls-cyan); }
+.badge-success { background-color: rgba(62, 220, 151, .18); color: #3EDC97; }
+.badge-danger { background-color: rgba(255, 107, 91, .18); color: var(--ls-coral); }
+.badge-warning { background-color: rgba(255, 194, 75, .18); color: #FFC24B; }
+
+.form-control, .form-control:focus {
+  background-color: var(--ls-deep-space);
+  border-color: var(--ls-horizon);
+  color: var(--ls-starlight);
+}
+.form-control:focus { border-color: var(--ls-cyan); box-shadow: 0 0 0 .2rem rgba(88, 199, 243, .20); }
+.form-control::placeholder { color: #6C7A93; }
+
+pre { background-color: var(--ls-deep-space); border: 1px solid var(--ls-horizon); color: var(--ls-stardust); }
+hr { border-top-color: var(--ls-horizon); }
+.text-muted { color: #7F8CA3 !important; }
+
+/* German is a compound language: "Schwierigkeit" and "Umlaufmenge" do not fit
+   the narrow stat cards and broke mid-word. Hyphenate properly instead -- this
+   needs the lang attribute on <html>, which layout.pug now sets. */
+
+
+/* German compounds are long and the stat cards are narrow. Bootstrap puts
+   `word-wrap: break-word` on .card, which breaks "Schwierigkeit" mid-word with
+   no hyphen; the cure is to forbid that and hyphenate properly instead, which
+   works because layout.pug sets the language on <html>. */
+.card-header, .card-header strong {
+  overflow-wrap: normal;
+  word-wrap: normal;
+  word-break: normal;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
