@@ -279,6 +279,36 @@ router.get('/address/:hash/:count', function(req, res) {
 // It renders rather than redirecting to the transaction: expiry and history are
 // properties of the NAME, and a transaction page can only ever show the one
 // operation it carries.
+// What a shared link to a name should say in Telegram, on X, in LinkedIn: the
+// name, whether anyone can still take it, which block it last moved in, and the
+// beginning of its value. The words come from the request's locale, so a link
+// shared as ?lang=de previews in German.
+function name_preview(res, nameinfo, blockcount) {
+  var t = L(res);
+  var newest = nameinfo.newest;
+  var status;
+  if (nameinfo.pending) {
+    status = t.og_unconfirmed;
+  } else if (nameinfo.expires_at && blockcount >= nameinfo.expires_at) {
+    status = t.og_expired_since + ' ' + nameinfo.expires_at + ' \u2014 ' + t.og_free_again;
+  } else {
+    status = t.og_registered_until + ' ' + nameinfo.expires_at;
+  }
+
+  var parts = [status];
+  if (newest && newest.height > 0) parts.push(t.og_in_block + ' ' + newest.height);
+  if (newest && newest.value) {
+    var v = String(newest.value).replace(/\s+/g, ' ').trim();
+    parts.push(v.length > 110 ? v.slice(0, 110) + '\u2026' : v);
+  }
+
+  return {
+    title: nameinfo.name + ' \u00b7 ' + (settings.headerlabel || settings.coin),
+    description: parts.join(' \u00b7 '),
+    path: '/name/' + nameinfo.name.split('/').map(encodeURIComponent).join('/')
+  };
+}
+
 function route_get_name(res, name) {
   if (!name) return route_get_index(res, L(res).ex_search_error + name);
   names.page(name, function(err, nameinfo) {
@@ -288,7 +318,12 @@ function route_get_name(res, name) {
     }
     if (!nameinfo) return route_get_index(res, L(res).ex_search_error + name);
     lib.get_blockcount(function(blockcount) {
-      res.render('name', { active: 'name', nameinfo: nameinfo, blockcount: blockcount });
+      res.render('name', {
+        active: 'name',
+        nameinfo: nameinfo,
+        blockcount: blockcount,
+        meta: name_preview(res, nameinfo, blockcount)
+      });
     });
   });
 }

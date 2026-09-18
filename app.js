@@ -63,6 +63,12 @@ app.use(function (req, res, next) {
     // Only an explicit ?lang= is a decision worth remembering; a header is not.
     res.cookie('lang', choice.lang, { maxAge: 365 * 24 * 3600 * 1000, sameSite: 'Lax' });
   }
+  // Absolute base for og: tags -- a social crawler needs the full URL, and the
+  // page itself only knows the path. Behind Cloudflare the connection to us is
+  // plain http, so the scheme has to come from the forwarded header.
+  var proto = String(req.headers['x-forwarded-proto'] || req.protocol || 'https').split(',')[0].trim();
+  res.locals.baseUrl = proto + '://' + req.get('host');
+
   res.locals.lang = choice.lang;
   res.locals.languages = i18n.available;
 
