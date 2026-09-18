@@ -147,7 +147,7 @@ html(lang=lang)
         if typeof settings.headerlogo !== "undefined" && settings.headerlogo && settings.headerlogo.length > 1
           a.navbar-brand(href=(settings.headerlogo_url || '/'), title=settings.headerlogo_url ? 'le-space.de' : settings.title)
             img(src=settings.headerlogo, alt='Le-Space', style='width:153px;height:45px;')
-          a.navbar-product(href='/', title=settings.title)=settings.title
+          a.navbar-product(href='/', title=settings.title)=settings.headerlabel
         else
           a.navbar-brand(href='/')
             =settings.title
