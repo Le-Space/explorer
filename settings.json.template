@@ -5,7 +5,7 @@
 */
 {
   // name your instance!
-  "title": "IQUIDUS",
+  "title": "Le-Space Explorer",
 
   "address": "127.0.0.1:3001",
 
@@ -16,9 +16,9 @@
   "symbol": "DRK",
 
   // logo
-  "logo": "/images/logo.png",
+  "logo": "/images/le-space-mark-dark.svg",
   // Optional header logo - change false to e.g. "/images/headerlogo.png"
-  "headerlogo": false,
+  "headerlogo": "/images/le-space-logo-horizontal-dark.svg",
 
   // favicon
   "favicon": "public/favicon.ico",
@@ -29,7 +29,7 @@
   //     Lux, Materia, Minty, Pulse, Sandstone, Simplex, Sketchy, Slate, 
   //     Solar, Spacelab, Superhero, United, Yeti
   // theme (see /public/themes for available themes)
-  "theme": "Cyborg",
+  "theme": "le-space",
 
   // port to listen for requests on.
   "port" : 3001,
@@ -77,6 +77,9 @@
   "confirmations": 40,
 
   // language settings
+  // This is only the FALLBACK. The language of a request is chosen per
+  // visitor: ?lang=de wins, then the cookie, then Accept-Language, then this.
+  // Every locale/<code>.json that parses is offered in the switcher.
   "locale": "locale/en.json",
 
   // menu settings

@@ -11,6 +11,7 @@ var express = require('express')
   , db = require('./lib/database')
   , package_metadata = require('./package.json')
   , locale = require('./lib/locale')
+  , i18n = require('./lib/i18n')
   , request = require('request');
 
 var app = express();
@@ -48,6 +49,41 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Language per request. See lib/i18n.js for the order (?lang= > cookie >
+// Accept-Language > instance default).
+//
+// Express exposes its app settings to templates as `settings` (app.locals.settings),
+// which is where settings.locale.* comes from. res.locals is merged after
+// app.locals, so a shallow copy with a different locale shadows the global one
+// for this response only -- no template has to change.
+app.use(function (req, res, next) {
+  var choice = i18n.resolve(req);
+  if (choice.explicit) {
+    // Only an explicit ?lang= is a decision worth remembering; a header is not.
+    res.cookie('lang', choice.lang, { maxAge: 365 * 24 * 3600 * 1000, sameSite: 'Lax' });
+  }
+  res.locals.lang = choice.lang;
+  res.locals.languages = i18n.available;
+
+  // The switcher keeps the visitor where they are and only swaps ?lang=.
+  // Exception: the search result is a POST, and its URL answers no GET -- a
+  // language link there would lead nowhere, so it goes home instead.
+  res.locals.langUrl = function (code) {
+    var target = req.method === 'GET' ? req.originalUrl : '/';
+    var parts = target.split('?');
+    var query = (parts[1] || '').split('&').filter(function (p) {
+      return p && p.slice(0, 5) !== 'lang=';
+    });
+    query.push('lang=' + encodeURIComponent(code));
+    return parts[0] + '?' + query.join('&');
+  };
+  res.locals.langName = function (code) {
+    return ({ en: 'English', de: 'Deutsch' })[code] || code;
+  };
+  res.locals.settings = Object.assign({}, req.app.settings, { locale: i18n.dict(choice.lang) });
+  next();
+});
 
 // routes
 app.use('/api', bitcoinapi.app);

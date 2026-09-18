@@ -34,3 +34,14 @@ settings.json
 .DS_Store
 
 package-lock.json
+
+# Brand assets are content, not build output. The rules above ignore every *.png
+# and *.ico, which silently dropped the Le-Space icons and logos from the first
+# commit -- they come from docs/le-space-brand in Le-Space/landing and belong in
+# the repository.
+!public/favicon.ico
+!public/favicon-32x32.png
+!public/apple-touch-icon.png
+!public/android-chrome-512x512.png
+!public/images/le-space-*.png
+!public/themes/le-space/thumbnail.png

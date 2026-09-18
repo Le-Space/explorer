@@ -7,6 +7,12 @@ var express = require('express')
     , names = require('../lib/names')
     , qr = require('qr-image');
 
+// The locale of THIS request. lib/locale is the instance default, loaded once at
+// startup; the middleware in app.js puts the visitor's choice on res.locals.
+function L(res) {
+  return (res.locals && res.locals.settings && res.locals.settings.locale) || locale;
+}
+
 function route_get_block(res, blockhash) {
   lib.get_block(blockhash, function (block) {
     if (block != 'There was an error. Check your console.') {
@@ -103,7 +109,7 @@ function route_get_tx(res, txid) {
 function route_get_index(res, error) {
   db.is_locked(function(locked) {
     if (locked) {
-      res.render('index', { active: 'home', error: error, warning: locale.initial_index_alert});
+      res.render('index', { active: 'home', error: error, warning: L(res).initial_index_alert});
     } else {
       res.render('index', { active: 'home', error: error, warning: null});
     }
@@ -274,13 +280,13 @@ router.get('/address/:hash/:count', function(req, res) {
 // properties of the NAME, and a transaction page can only ever show the one
 // operation it carries.
 function route_get_name(res, name) {
-  if (!name) return route_get_index(res, locale.ex_search_error + name);
+  if (!name) return route_get_index(res, L(res).ex_search_error + name);
   names.page(name, function(err, nameinfo) {
     if (err) {
       console.error('name lookup failed for "' + name + '": ' + err.message);
-      return route_get_index(res, locale.ex_search_error + name);
+      return route_get_index(res, L(res).ex_search_error + name);
     }
-    if (!nameinfo) return route_get_index(res, locale.ex_search_error + name);
+    if (!nameinfo) return route_get_index(res, L(res).ex_search_error + name);
     lib.get_blockcount(function(blockcount) {
       res.render('name', { active: 'name', nameinfo: nameinfo, blockcount: blockcount });
     });
@@ -300,9 +306,9 @@ function search_name(res, query) {
   names.lookup(query, function(err, hit) {
     if (err) {
       console.error('name lookup failed for "' + query + '": ' + err.message);
-      return route_get_index(res, locale.ex_search_error + query);
+      return route_get_index(res, L(res).ex_search_error + query);
     }
-    if (!hit) return route_get_index(res, locale.ex_search_error + query);
+    if (!hit) return route_get_index(res, L(res).ex_search_error + query);
     res.redirect('/name/' + hit.name.split('/').map(encodeURIComponent).join('/'));
   });
 }

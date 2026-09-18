@@ -1,3 +1,49 @@
+Le-Space Explorer
+================
+
+A block explorer for [Doichain](https://doichain.org), in Le-Space branding and
+in two languages.
+
+Forked from [Doichain/explorer](https://github.com/Doichain/explorer), which in
+turn forks [iquidus/explorer](https://github.com/iquidus/explorer) 1.7.4. The
+original README follows below and still describes how to install and run it.
+
+### What this fork adds
+
+**Branding.** Palette, logo, favicons and fonts come from the Le-Space brand
+package (`docs/le-space-brand` in `Le-Space/landing`): Deep Space `#0B0E15` as
+the ground, Signal Coral `#FF6B5B` as the accent, Sync Cyan `#58C7F3` for links,
+Inter for the interface and JetBrains Mono wherever an identifier is read
+character by character -- hashes, addresses, names. The theme lives in
+`public/themes/le-space/`, where everything below the marked line is ours and
+the part above is the untouched dark base, so the base can be replaced wholesale
+when Bootswatch moves on.
+
+**Two languages, chosen per visitor.** The upstream explorer serves one language
+per instance. Here every `locale/<code>.json` that parses is offered, and the
+language of a request is decided in this order:
+
+1. `?lang=de` -- explicit, and therefore shareable: a link can carry the
+   language, which a cookie never can. This choice is remembered in a cookie.
+2. the cookie, from an earlier explicit choice.
+3. `Accept-Language`, i.e. what the browser asks for, by quality -- so a German
+   browser gets German without doing anything.
+4. `settings.locale`, the instance default.
+
+Adding a language means adding one file: drop `locale/fr.json` next to the
+others and it appears in the switcher.
+
+The templates were not touched for this. Express exposes its app settings to
+views as `settings`, which is where `settings.locale.*` comes from; the
+middleware in `app.js` puts a per-request copy on `res.locals`, and that shadows
+the global one for exactly that response. See `lib/i18n.js`.
+
+**Doichain features inherited from the parent fork:** Core 31 support, name
+search through ElectrumX, a name page at `/name/<name>` with expiry and history,
+and a share button.
+
+---
+
 Iquidus Explorer - 1.7.4
 ================
 
