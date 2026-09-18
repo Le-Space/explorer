@@ -21,17 +21,38 @@ html(lang=lang)
     //- The card carries a German or English line, so it follows the page
     //- language like everything else.
     - var ogImage = base + (m.image || ('/images/og-explorer-' + (lang === 'de' ? 'de' : 'en') + '.png'))
+    //- Declaring the size lets LinkedIn and Facebook lay out the wide card on
+    //- the first scrape, before they have fetched the image; without it they
+    //- tend to fall back to the small square one -- and LinkedIn caches that
+    //- for about a week. Only for the card we ship: a page passing its own
+    //- image has to pass its own measurements with it, or it gets none.
+    - var ogImageW = m.image ? m.imageWidth : 1200
+    - var ogImageH = m.image ? m.imageHeight : 630
+    //- The description follows the image, not the page: describing someone
+    //- else's picture confidently is worse for a screen reader than
+    //- describing none.
+    - var ogImageAlt = m.image ? m.imageAlt : settings.locale.og_image_alt
     meta(property='og:site_name', content=settings.title)
     meta(property='og:type', content='website')
     meta(property='og:title', content=ogTitle)
     meta(property='og:description', content=ogDesc)
     meta(property='og:url', content=ogUrl)
     meta(property='og:image', content=ogImage)
+    if ogImageW && ogImageH
+      meta(property='og:image:width', content=ogImageW)
+      meta(property='og:image:height', content=ogImageH)
+    if ogImageAlt
+      meta(property='og:image:alt', content=ogImageAlt)
     meta(property='og:locale', content=(lang === 'de' ? 'de_DE' : 'en_US'))
+    //- The only tag here without an Open Graph equivalent: it picks the layout.
+    //- Telegram and LinkedIn read Open Graph only and ignore the rest of these;
+    //- X prefers them and falls back to Open Graph for anything missing.
     meta(name='twitter:card', content='summary_large_image')
     meta(name='twitter:title', content=ogTitle)
     meta(name='twitter:description', content=ogDesc)
     meta(name='twitter:image', content=ogImage)
+    if ogImageAlt
+      meta(name='twitter:image:alt', content=ogImageAlt)
     meta(name='description', content=ogDesc)
     link(rel='canonical', href=ogUrl)
     link(rel='icon', href='/favicon.ico', sizes='48x48')

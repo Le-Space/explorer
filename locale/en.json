@@ -158,6 +158,7 @@
     "og_registered_until": "registered until block",
     "og_unconfirmed": "unconfirmed",
     "og_in_block": "in block",
+    "og_image_alt": "Doichain Explorer — names, blocks and transactions",
 
     // footer
     "source_code": "Source code on GitHub"
