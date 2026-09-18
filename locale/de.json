@@ -159,5 +159,8 @@
     "og_free_again": "wieder frei zur Registrierung",
     "og_registered_until": "registriert bis Block",
     "og_unconfirmed": "unbestätigt",
-    "og_in_block": "in Block"
+    "og_in_block": "in Block",
+
+    // footer
+    "source_code": "Quelltext auf GitHub"
 }

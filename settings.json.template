@@ -25,6 +25,9 @@
   // Text beside the logo: the chain, not the product. The menu already says
   // "Explorer". Unset falls back to "coin".
   "headerlabel": "Doichain",
+  // Source link in the footer. Point it at YOUR fork if you run a modified
+  // copy; empty hides the icon.
+  "repo_url": "https://github.com/Le-Space/explorer",
 
   // favicon
   "favicon": "public/favicon.ico",

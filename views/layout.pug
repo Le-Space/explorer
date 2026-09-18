@@ -308,8 +308,14 @@ html(lang=lang)
     block content
     div(class=footerClasses, role='navigation')
       .col-md-4.navbar-nav
-        if settings.display.twitter || settings.display.facebook || settings.display.googleplus || settings.display.youtube
+        if settings.repo_url || settings.display.twitter || settings.display.facebook || settings.display.googleplus || settings.display.youtube
           ul.nav.justify-content-left
+            //- Where this explorer comes from. An explorer asks to be trusted with
+            //- what it says about the chain, so it should say where its own code is.
+            if settings.repo_url
+              li.pull-left
+                a#repo-icon.nav-link.social-link(href=settings.repo_url, target='_blank', rel='noopener', title=settings.locale.source_code, aria-label=settings.locale.source_code)
+                  span.glyphicon.fa.fa-github
             if settings.display.twitter
               li.pull-left
                 a#twitter-icon.nav-link.social-link(href="https://twitter.com/"+settings.twitter, target='_blank')
