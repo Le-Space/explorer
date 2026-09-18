@@ -85,3 +85,8 @@ a:hover, a:focus { color: #8ADBF7; }
 pre { background-color: var(--ls-deep-space); border: 1px solid var(--ls-horizon); color: var(--ls-stardust); }
 hr { border-top-color: var(--ls-horizon); }
 .text-muted { color: #7F8CA3 !important; }
+
+/* German is a compound language: "Schwierigkeit" and "Umlaufmenge" do not fit
+   the narrow stat cards and broke mid-word. Hyphenate properly instead -- this
+   needs the lang attribute on <html>, which layout.pug now sets. */
+.card-header strong, .card-header { hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }

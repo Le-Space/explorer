@@ -1,5 +1,8 @@
 doctype html
-html
+//- lang matters once there is more than one language: it tells the browser how
+//- to hyphenate (German compounds are long and break badly in narrow cards),
+//- and it tells screen readers and search engines which language this is.
+html(lang=lang)
   head
     title= settings.title
     meta(charset='utf-8')
