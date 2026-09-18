@@ -25,7 +25,7 @@ html(lang=lang)
     link(rel='stylesheet', href='/stylesheets/style.css')
     //- Brand layer last: style.css sets a body font of its own and would
     //- otherwise win over the theme.
-    link(rel='stylesheet', href='/stylesheets/le-space.css')
+    link(rel='stylesheet', href='/stylesheets/le-space.css?v=' + settings.asset_version)
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
     script(src='//stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js')
     script(src='/vendor/jqplot/jquery.jqplot.min.js')
@@ -38,7 +38,7 @@ html(lang=lang)
     script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js')
     script(src='//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js')
     script(src='//cdn.datatables.net/responsive/1.0.1/js/dataTables.responsive.js')
-    script(src='/javascripts/name-share.js')
+    script(src='/javascripts/name-share.js?v=' + settings.asset_version)
     script(src='//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js')
     script(src='/javascripts/chart.js')
     script.
@@ -139,10 +139,17 @@ html(lang=lang)
       .navbar-header
         button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbar-collapse')
           span.navbar-toggler-icon 
-        a.navbar-brand(href='/')
-          if typeof settings.headerlogo !== "undefined" && settings.headerlogo && settings.headerlogo.length > 1
-            img(src=settings.headerlogo, style='width:153px;height:45px;')
-          else
+        //- Company mark and product name, side by side. The mark leaves for the
+        //- company site, so the product name stays behind as the way home --
+        //- otherwise a click on the logo would be a one-way door out of the
+        //- explorer. The name also says which chain this explores, which the
+        //- mark alone never could.
+        if typeof settings.headerlogo !== "undefined" && settings.headerlogo && settings.headerlogo.length > 1
+          a.navbar-brand(href=(settings.headerlogo_url || '/'), title=settings.headerlogo_url ? 'le-space.de' : settings.title)
+            img(src=settings.headerlogo, alt='Le-Space', style='width:153px;height:45px;')
+          a.navbar-product(href='/', title=settings.title)=settings.title
+        else
+          a.navbar-brand(href='/')
             =settings.title
       .collapse.navbar-collapse(id='navbar-collapse')
         ul.navbar-nav.mr-auto

@@ -5,7 +5,7 @@
 */
 {
   // name your instance!
-  "title": "Le-Space Explorer",
+  "title": "Doichain Explorer",
 
   "address": "127.0.0.1:3001",
 
@@ -19,6 +19,9 @@
   "logo": "/images/le-space-mark-dark.svg",
   // Optional header logo - change false to e.g. "/images/headerlogo.png"
   "headerlogo": "/images/le-space-logo-horizontal-dark.svg",
+  // The logo is the company mark and leaves for the company site; the
+  // product name beside it stays the way back to the explorer.
+  "headerlogo_url": "https://le-space.de",
 
   // favicon
   "favicon": "public/favicon.ico",
