@@ -111,3 +111,15 @@ hr { border-top-color: var(--ls-horizon); }
   .navbar-brand img { width: 110px !important; height: 32px !important; }
   .navbar-product { font-size: .95rem; padding-left: .6rem; }
 }
+
+/* The chain name in the header is set like the name on the link-preview card:
+   JetBrains Mono, the brand's label face. An explorer is a tool for reading
+   identifiers, so the name of the chain is set the way the chain's own hashes
+   and names are set -- and the header then looks like the card it shares.
+   The word EXPLORER from the card is deliberately NOT repeated here: the menu
+   beside it already has an "Explorer" item. */
+.navbar-product {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.02rem;
+  letter-spacing: -0.015em;
+}
