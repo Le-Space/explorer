@@ -328,6 +328,13 @@ app.set('nethash_units', settings.nethash_units);
 app.set('show_sent_received', settings.show_sent_received);
 app.set('logo', settings.logo);
 app.set('headerlogo', settings.headerlogo);
+// Templates see the EXPRESS app settings as `settings`, not lib/settings --
+// a value that is never app.set() here simply does not exist for a view.
+app.set('headerlogo_url', settings.headerlogo_url);
+// Our own css/js are linked without a version, so a browser -- and Cloudflare
+// in front of it -- keeps serving the old copy after a change. A stamp that
+// changes on every start makes the URL new, which is all a cache keys on.
+app.set('asset_version', String(Date.now()));
 app.set('theme', settings.theme);
 app.set('labels', settings.labels);
 

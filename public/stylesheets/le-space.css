@@ -89,3 +89,25 @@ hr { border-top-color: var(--ls-horizon); }
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+
+/* Company mark and product name sit side by side, parted by a hairline. The
+   name carries the chain, which the mark alone cannot say. */
+.navbar-product {
+  color: var(--ls-starlight);
+  font-weight: 600;
+  letter-spacing: .01em;
+  padding-left: .85rem;
+  margin-left: .1rem;
+  margin-right: .9rem;
+  border-left: 1px solid var(--ls-horizon);
+  align-self: center;
+  white-space: nowrap;
+}
+.navbar-product:hover, .navbar-product:focus { color: var(--ls-cyan); text-decoration: none; }
+.navbar-header { display: flex; align-items: center; }
+@media (max-width: 575px) {
+  /* On a phone the mark plus the name is too much; the name is the one that
+     says what this is, so the mark steps aside. */
+  .navbar-brand img { width: 110px !important; height: 32px !important; }
+  .navbar-product { font-size: .95rem; padding-left: .6rem; }
+}
