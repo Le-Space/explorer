@@ -154,4 +154,70 @@ describe('explorer', function() {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
   });
+
+  describe('summarize_block_txs', function() {
+
+    // Shape and values taken from mainnet block 432946: one coinbase paying
+    // 12.5 DOI to MzATCB2Xt2DMy5MScZgTzxJxvHJP2mZNYA, no other transactions.
+    var coinbase = {
+      vin:  [{addresses: 'coinbase', amount: 1250000000}],
+      vout: [{addresses: 'MzATCB2Xt2DMy5MScZgTzxJxvHJP2mZNYA', amount: 1250000000}]
+    };
+
+    it('should read the reward and the coinbase address', function() {
+      var r = lib.summarize_block_txs([coinbase]);
+      expect(r.reward).toEqual(1250000000);
+      expect(r.winner).toEqual('MzATCB2Xt2DMy5MScZgTzxJxvHJP2mZNYA');
+    });
+
+    it('should not count the coinbase as a fee', function() {
+      // prepare_vin gives a coinbase an input equal to its output, so summing
+      // it with the rest would hide real fees behind a zero.
+      expect(lib.summarize_block_txs([coinbase]).fees).toEqual(0);
+    });
+
+    it('should take fees from what an ordinary transaction does not spend', function() {
+      var spend = {
+        vin:  [{addresses: 'A', amount: 1000000}],
+        vout: [{addresses: 'B', amount: 900000}]
+      };
+      var r = lib.summarize_block_txs([coinbase, spend]);
+      expect(r.fees).toEqual(100000);
+      expect(r.reward).toEqual(1250000000);
+    });
+
+    it('should add up fees across several transactions', function() {
+      var a = {vin: [{addresses: 'A', amount: 500}], vout: [{addresses: 'B', amount: 400}]};
+      var b = {vin: [{addresses: 'C', amount: 900}], vout: [{addresses: 'D', amount: 650}]};
+      expect(lib.summarize_block_txs([coinbase, a, b]).fees).toEqual(350);
+    });
+
+    it('should ignore a transaction whose inputs could not be resolved', function() {
+      // More out than in is missing data, not a negative fee -- one of these
+      // must not be able to drag a block's fees below zero.
+      var broken = {vin: [], vout: [{addresses: 'B', amount: 700}]};
+      var ok = {vin: [{addresses: 'A', amount: 900}], vout: [{addresses: 'B', amount: 800}]};
+      var r = lib.summarize_block_txs([coinbase, broken, ok]);
+      expect(r.fees).toEqual(100);
+    });
+
+    it('should take the first coinbase output that carries an address', function() {
+      var split = {
+        vin:  [{addresses: 'coinbase', amount: 1250000000}],
+        vout: [{amount: 0}, {addresses: 'MinerOne', amount: 1000000000},
+               {addresses: 'MinerTwo', amount: 250000000}]
+      };
+      var r = lib.summarize_block_txs([split]);
+      expect(r.winner).toEqual('MinerOne');
+      expect(r.reward).toEqual(1250000000);
+    });
+
+    it('should answer zeroes for a block it has no transactions for', function() {
+      var r = lib.summarize_block_txs([]);
+      expect(r.reward).toEqual(0);
+      expect(r.fees).toEqual(0);
+      expect(r.winner).toEqual('');
+      expect(lib.summarize_block_txs(undefined).reward).toEqual(0);
+    });
+  });
 });

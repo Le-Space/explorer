@@ -82,6 +82,10 @@
     "name_expiration": 36000
   },
 
+  // Target spacing of the chain in seconds, used by
+  // scripts/backfill-blocks.js to read "the last N days" as a height range.
+  "blocktime": 600,
+
   // confirmations
   "confirmations": 40,
 
