@@ -286,5 +286,39 @@
                             "On an ordinary visit through Cloudflare no IP address of yours reaches us, and we keep no user accounts; as a rule we therefore cannot identify individual visitors. In response to a request for access we can then only tell you that we hold no data about you (Art. 11 GDPR)."
                     ]
             }
-    ]
+    ],
+
+    // Mining page. The notes are part of what the page claims, not decoration:
+    // the hash rate is derived rather than measured, and what is counted is
+    // addresses, not operators. Shortening them changes the claim.
+    "menu_mining": "Mining",
+    "mining_title": "Mining",
+    "mining_empty_title": "No block history yet",
+    "mining_empty_text": "This instance has not recorded any blocks yet. From now on the index writes one for every new block; the past is filled in by <code>node scripts/backfill-blocks.js days 30</code>.",
+    "mining_tile_hashrate": "Hash rate",
+    "mining_tile_difficulty": "Difficulty",
+    "mining_tile_last_reward": "Last block reward",
+    "mining_tile_avg_reward": "Avg reward (24 h)",
+    "mining_tile_blocks24": "Blocks (24 h)",
+    "mining_tile_fees24": "Fees (24 h)",
+    "mining_hashrate_note": "The hash rate is not measured but derived from the work done and the block times — the same calculation the node performs for <code>getnetworkhashps</code>.",
+    "mining_chart_network": "Hash rate and difficulty, 7 days",
+    "mining_chart_rewards": "Reward per block, 24 hours",
+    "mining_chart_miners": "Blocks per coinbase address, 24 hours",
+    "mining_log_note": "Both axes are logarithmic: within a week these values span more than thirtyfold, and a linear axis would flatten most of the curve.",
+    "mining_miners_note": "What is counted is the payout address from the coinbase, not the operator: one operator can use many addresses, and a pool pays out to many.",
+    "mining_fees_note": "Fees sit on their own axis. Against the block subsidy they are vanishingly small on this chain and would otherwise be invisible.",
+    "mining_table_recent": "Recent blocks",
+    "mining_charts_need_js": "The charts need JavaScript. The figures above and the table below do not.",
+    "mining_col_height": "Height",
+    "mining_col_time": "Time",
+    "mining_col_address": "Coinbase address",
+    "mining_col_reward": "Reward",
+    "mining_col_fees": "Fees",
+    "mining_col_txs": "Tx",
+    "mining_col_size": "Size",
+    "mining_col_blocks": "Blocks",
+    "mining_col_share": "Share",
+    "mining_rest": "others",
+    "mining_no_data": "No data for this period."
 }

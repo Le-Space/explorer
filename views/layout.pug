@@ -221,6 +221,19 @@ html(lang=lang)
               a.nav-link(href='/network')
                 span.fa.fa-share-alt
                 span.menu-text #{settings.locale.menu_network}
+          //- `!== false` rather than `== true`, unlike its neighbours. A
+          //- settings.json written before this page existed has a `display`
+          //- block without `mining` in it -- and lib/settings.js replaces that
+          //- object wholesale rather than merging the defaults into it, so the
+          //- key is simply absent. Failing closed would hide the page from
+          //- every existing instance until someone edited a file by hand.
+          if settings.display.mining !== false
+            li#mining
+              a.nav-link(href='/mining')
+                //- fa 4.3 has no pickaxe; the gauge is what this page is: a
+                //- reading of how hard the chain is working.
+                span.fa.fa-tachometer
+                span.menu-text #{settings.locale.menu_mining}
           if settings.display.richlist == true
             li#richlist
               a.nav-link(href='/richlist')

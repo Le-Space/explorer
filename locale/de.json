@@ -288,5 +288,39 @@
                             "Beim gewöhnlichen Aufruf über Cloudflare kommt keine IP-Adresse von Ihnen bei uns an, und Benutzerkonten führen wir nicht; einzelne Besucherinnen und Besucher können wir deshalb in aller Regel nicht identifizieren. Auf eine Auskunftsanfrage können wir dann nur mitteilen, dass zu Ihnen keine Daten bei uns vorliegen (Art. 11 DSGVO)."
                     ]
             }
-    ]
+    ],
+
+    // Mining-Seite. Die Notizen sind Teil der Aussage, nicht Zierde:
+    // Hashrate ist berechnet, nicht gemessen, und gezaehlt werden Adressen,
+    // nicht Betreiber. Wer sie kuerzt, aendert was die Seite behauptet.
+    "menu_mining": "Mining",
+    "mining_title": "Mining",
+    "mining_empty_title": "Noch keine Blockhistorie",
+    "mining_empty_text": "Diese Instanz hat noch keine Blöcke aufgezeichnet. Ab jetzt schreibt der Index bei jedem neuen Block einen mit; die Vergangenheit trägt <code>node scripts/backfill-blocks.js days 30</code> nach.",
+    "mining_tile_hashrate": "Hashrate",
+    "mining_tile_difficulty": "Schwierigkeit",
+    "mining_tile_last_reward": "Letzter Blockertrag",
+    "mining_tile_avg_reward": "Ø Ertrag (24 h)",
+    "mining_tile_blocks24": "Blöcke (24 h)",
+    "mining_tile_fees24": "Gebühren (24 h)",
+    "mining_hashrate_note": "Die Hashrate wird nicht gemessen, sondern aus der geleisteten Arbeit und den Blockzeiten berechnet — dieselbe Rechnung, die der Knoten für <code>getnetworkhashps</code> anstellt.",
+    "mining_chart_network": "Hashrate und Schwierigkeit, 7 Tage",
+    "mining_chart_rewards": "Ertrag je Block, 24 Stunden",
+    "mining_chart_miners": "Blöcke je Coinbase-Adresse, 24 Stunden",
+    "mining_log_note": "Beide Achsen sind logarithmisch: Die Werte schwanken innerhalb einer Woche um mehr als das Dreißigfache, linear wäre der größte Teil der Kurve plattgedrückt.",
+    "mining_miners_note": "Gezählt wird die Auszahlungsadresse aus der Coinbase, nicht der Betreiber: Ein Betreiber kann viele Adressen benutzen, und ein Pool zahlt an viele.",
+    "mining_fees_note": "Die Gebühren stehen auf einer eigenen Achse. Gegen die Blocksubvention sind sie auf dieser Kette verschwindend klein und wären sonst unsichtbar.",
+    "mining_table_recent": "Jüngste Blöcke",
+    "mining_charts_need_js": "Die Diagramme brauchen JavaScript. Die Zahlen darüber und die Tabelle darunter stehen auch ohne.",
+    "mining_col_height": "Höhe",
+    "mining_col_time": "Zeit",
+    "mining_col_address": "Coinbase-Adresse",
+    "mining_col_reward": "Ertrag",
+    "mining_col_fees": "Gebühren",
+    "mining_col_txs": "Tx",
+    "mining_col_size": "Größe",
+    "mining_col_blocks": "Blöcke",
+    "mining_col_share": "Anteil",
+    "mining_rest": "übrige",
+    "mining_no_data": "Keine Daten für diesen Zeitraum."
 }
