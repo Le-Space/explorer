@@ -10,10 +10,10 @@
   "address": "127.0.0.1:3001",
 
   // coin name
-  "coin": "Darkcoin",
+  "coin": "Doichain",
 
   // coin symbol
-  "symbol": "DRK",
+  "symbol": "DOI",
 
   // logo
   "logo": "/images/le-space-mark-dark.svg",
@@ -107,6 +107,7 @@
     "search": true,
     "movement": true,
     "network": true,
+    "mining": true,
     // Settings to switch navbar theme, leaving both false will use the 'primary' navbar
     "navbar_dark": false,
     "navbar_light": false

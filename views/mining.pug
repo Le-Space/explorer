@@ -1,0 +1,149 @@
+extends layout
+
+//- The mining page.
+//-
+//- The figures and the table are rendered here rather than fetched, so the
+//- page carries its answer before any script runs. Only the three charts are
+//- filled in afterwards, from /ext/mining/*; if that never happens, what is
+//- left is still a page about mining rather than three empty boxes.
+//-
+//- The notes under the charts are content, not decoration. The hash rate is
+//- derived rather than measured, and the miners chart counts addresses rather
+//- than operators; a reader who is not told that will read both wrongly.
+
+block content
+  //- Satoshi everywhere in the data, DOI on the screen. Trailing zeroes go,
+  //- but never the last two -- "12.5" and "12.50000258" should line up as
+  //- amounts of the same thing.
+  - var doi = function (sat) { var s = ((sat || 0) / 1e8).toFixed(8).replace(/(\.\d\d)(\d*?)0+$/, '$1$2'); return s; }
+  - var SI = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s']
+  - var rate = function (h) { var i = 0; h = h || 0; while (h >= 1000 && i < SI.length - 1) { h /= 1000; i++; } return h.toFixed(2) + ' ' + SI[i]; }
+  - var LOCALE = lang === 'de' ? 'de-DE' : 'en-GB'
+  - var big = function (n) { return (n || 0).toLocaleString(LOCALE, {maximumFractionDigits: 2}); }
+  //- Difficulty runs to nine figures and wraps a tile onto two lines, where
+  //- the exact digits say nothing a reader wants at a glance -- the chart
+  //- below carries the detail. Compact notation needs a full-ICU build, so
+  //- it falls back to the plain grouping rather than throwing on one that
+  //- has none.
+  - var compact = function (n) { try { return (n || 0).toLocaleString(LOCALE, {notation: 'compact', maximumFractionDigits: 2}); } catch (e) { return big(n); } }
+  - var when = function (t) { return new Date((t || 0) * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' UTC'; }
+
+  .col-md-12(style="margin-bottom: 4%")
+    if empty
+      .card.card-default
+        .card-header
+          strong #{settings.locale.mining_empty_title}
+        .card-body
+          p!= settings.locale.mining_empty_text
+    else
+      //- What a reader came for, before anything else on the page.
+      .row.mining-tiles
+        .col-6.col-md-2
+          .card.card-default
+            .card-body
+              .mining-tile-label #{settings.locale.mining_tile_hashrate}
+              .mining-tile-value= rate(tiles.hashrate)
+        .col-6.col-md-2
+          .card.card-default
+            .card-body
+              .mining-tile-label #{settings.locale.mining_tile_difficulty}
+              .mining-tile-value(title=big(tiles.difficulty))= compact(tiles.difficulty)
+        .col-6.col-md-2
+          .card.card-default
+            .card-body
+              .mining-tile-label #{settings.locale.mining_tile_last_reward}
+              .mining-tile-value #{doi(tiles.last_reward)} #{settings.symbol}
+        .col-6.col-md-2
+          .card.card-default
+            .card-body
+              .mining-tile-label #{settings.locale.mining_tile_avg_reward}
+              .mining-tile-value #{doi(tiles.avg_reward_24h)} #{settings.symbol}
+        .col-6.col-md-2
+          .card.card-default
+            .card-body
+              .mining-tile-label #{settings.locale.mining_tile_blocks24}
+              .mining-tile-value= big(tiles.blocks_24h)
+        .col-6.col-md-2
+          .card.card-default
+            .card-body
+              .mining-tile-label #{settings.locale.mining_tile_fees24}
+              .mining-tile-value #{doi(tiles.fees_24h)} #{settings.symbol}
+
+      noscript
+        .alert.alert-secondary.mining-noscript #{settings.locale.mining_charts_need_js}
+
+      .card.card-default.mining-card
+        .card-header
+          strong #{settings.locale.mining_chart_network}
+        .card-body
+          .mining-canvas
+            canvas#chart-network(role='img', aria-label=settings.locale.mining_chart_network)
+          p.mining-note!= settings.locale.mining_hashrate_note
+          p.mining-note!= settings.locale.mining_log_note
+
+      .row
+        .col-md-6
+          .card.card-default.mining-card
+            .card-header
+              strong #{settings.locale.mining_chart_rewards}
+            .card-body
+              .mining-canvas
+                canvas#chart-rewards(role='img', aria-label=settings.locale.mining_chart_rewards)
+              p.mining-note!= settings.locale.mining_fees_note
+        .col-md-6
+          .card.card-default.mining-card
+            .card-header
+              strong #{settings.locale.mining_chart_miners}
+            .card-body
+              .mining-canvas
+                canvas#chart-miners(role='img', aria-label=settings.locale.mining_chart_miners)
+              p.mining-note!= settings.locale.mining_miners_note
+
+      .card.card-default
+        .card-header
+          strong #{settings.locale.mining_table_recent}
+        .card-body.table-responsive
+          table.table.table-striped.mining-table
+            thead
+              tr
+                th #{settings.locale.mining_col_height}
+                th #{settings.locale.mining_col_time}
+                th #{settings.locale.mining_col_address}
+                th.text-right #{settings.locale.mining_col_reward}
+                th.text-right #{settings.locale.mining_col_fees}
+                th.text-right #{settings.locale.mining_col_txs}
+                th.text-right #{settings.locale.mining_col_size}
+            tbody
+              each b in recent
+                tr
+                  td
+                    a(href='/block/' + b.hash)= b.height
+                  td.mining-time= when(b.time)
+                  td
+                    if b.winner
+                      a(href='/address/' + b.winner)= b.winner
+                    else
+                      span —
+                  td.text-right #{doi(b.reward)}
+                  td.text-right #{doi(b.fees)}
+                  td.text-right= b.txcount
+                  td.text-right= big(b.size)
+
+      //- The chart code takes its labels from here rather than carrying a
+      //- second copy of the locale files into JavaScript.
+      -
+        var miningI18n = {
+          hashrate: settings.locale.mining_tile_hashrate,
+          difficulty: settings.locale.mining_tile_difficulty,
+          reward: settings.locale.mining_col_reward,
+          fees: settings.locale.mining_col_fees,
+          blocks: settings.locale.mining_col_blocks,
+          rest: settings.locale.mining_rest,
+          noData: settings.locale.mining_no_data,
+          locale: lang === 'de' ? 'de-DE' : 'en-GB',
+          symbol: settings.symbol
+        };
+      script
+        != 'window.MINING_I18N = ' + JSON.stringify(miningI18n) + ';'
+      script(src='/vendor/chartjs/chart.umd-4.5.1.min.js')
+      script(src='/javascripts/mining.js?v=' + settings.asset_version)

@@ -469,3 +469,77 @@ hr { border-top-color: var(--ls-horizon); }
 @media (max-width: 767.98px) {
   .legal-body { padding-bottom: 5rem; }
 }
+
+/* ------------------------------------------------------------------------
+   Mining page.
+
+   The figures come first and are meant to be read at a glance; the charts
+   below them are the shape of the same numbers over time. Chart.js needs a
+   sized container once maintainAspectRatio is off, which is what the canvas
+   wrappers are for -- without a height the canvas grows on every reflow.
+   ------------------------------------------------------------------------ */
+.mining-tiles { margin-bottom: 1rem; }
+.mining-tiles > [class*="col-"] { padding-left: .4rem; padding-right: .4rem; margin-bottom: .8rem; }
+.mining-tiles .card-body { padding: .7rem .8rem; }
+/* One row of tiles should read as one object: a label that wraps onto a second
+   line must not make its tile taller than its neighbours. The column is already
+   full height in the flex row, so the card only has to fill it. */
+.mining-tiles .card { height: 100%; }
+
+.mining-tile-label {
+  font-size: .72rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ls-stardust);
+  opacity: .8;
+  margin-bottom: .25rem;
+}
+.mining-tile-value {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.05rem;
+  color: var(--ls-starlight);
+  line-height: 1.25;
+  /* Figures in a row of tiles should line up, not dance as digits change. */
+  font-variant-numeric: tabular-nums;
+  word-break: break-word;
+}
+
+.mining-card { margin-bottom: 1rem; }
+.mining-canvas { position: relative; height: 300px; }
+.row .mining-card .mining-canvas { height: 260px; }
+
+/* The notes under each chart carry what the picture cannot say: that the hash
+   rate is derived, that the axes are logarithmic, that the miners chart counts
+   addresses. Small, but not hidden. */
+.mining-note {
+  margin: .8rem 0 0;
+  font-size: .82rem;
+  line-height: 1.5;
+  color: var(--ls-stardust);
+  opacity: .85;
+}
+.mining-note:last-child { margin-bottom: 0; }
+.mining-note code {
+  font-size: .92em;
+  background-color: rgba(255, 255, 255, .05);
+  padding: .05em .3em;
+  border-radius: 3px;
+}
+.mining-empty { text-align: center; padding: 2rem 0; opacity: .7; }
+
+.mining-noscript { margin-bottom: 1rem; }
+
+.mining-table { font-size: .86rem; }
+.mining-table td, .mining-table th { vertical-align: middle; }
+.mining-table .text-right { text-align: right; font-variant-numeric: tabular-nums; }
+.mining-time { white-space: nowrap; color: var(--ls-stardust); }
+/* An address is read character by character, and there is no room for the
+   whole of one on a phone -- so it takes the identifier face and is allowed
+   to scroll its own cell rather than widening the table. */
+.mining-table td:nth-child(3) {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .82rem;
+  max-width: 22rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}

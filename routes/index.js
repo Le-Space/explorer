@@ -232,6 +232,27 @@ router.get('/movement', function(req, res) {
   res.render('movement', {active: 'movement', flaga: settings.movement.low_flag, flagb: settings.movement.high_flag, min_amount:settings.movement.min_amount});
 });
 
+/**
+* The mining page.
+*
+* Headline figures and the recent blocks are rendered here, server-side, so
+* the page says something before any JavaScript runs; the three charts fetch
+* their series from /ext/mining/* afterwards. An instance with no recorded
+* blocks gets a short explanation instead of a page of zeroes -- see
+* db.get_mining_page.
+*/
+router.get('/mining', function(req, res) {
+  db.get_mining_page(function(page) {
+    res.render('mining', {
+      active: 'mining',
+      empty: page.empty,
+      tiles: page.tiles,
+      recent: page.recent,
+      pageTitle: L(res).mining_title
+    });
+  });
+});
+
 router.get('/network', function(req, res) {
   res.render('network', {active: 'network'});
 });
