@@ -85,6 +85,27 @@ block content
         .alert.alert-warning.alert-dismissable(role='alert')
           button.close(type='button', data-dismiss='alert') ×
           strong #{settings.locale.ex_warning} #{warning}
+
+  //- News. One item at a time, dismissible, and the dismissal is remembered per
+  //- browser against the id below -- so it is news rather than wallpaper, and a
+  //- later item with a new id shows again to someone who closed this one.
+  //- Hidden until the script has read that memory, so a reader who dismissed it
+  //- never sees it flash past on the next page load.
+  .row.news-row.d-none(id='news-banner', data-news-id='names-on-chain-2026-09')
+    .col-md-12
+      .news-card
+        button.news-close(type='button', aria-label=settings.locale.news_dismiss) ×
+        span.news-badge=settings.locale.news_badge
+        .news-main
+          .news-title=settings.locale.news_noc_title
+          .news-text=settings.locale.news_noc_text
+        .news-actions
+          a.news-cta(href='https://doichain.github.io/names-on-chain/', target='_blank', rel='noopener')
+            span=settings.locale.news_noc_open
+            span.news-arrow →
+          a.news-source(href='https://github.com/Doichain/names-on-chain', target='_blank', rel='noopener')
+            span.fa.fa-github
+            span=settings.locale.news_noc_source
   
   .col-md-12
     .card.card-default
