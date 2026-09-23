@@ -162,6 +162,14 @@
 
     // footer
     "source_code": "Source code on GitHub",
+
+    // news banner on the front page
+    "news_badge": "News",
+    "news_dismiss": "Dismiss this notice",
+    "news_noc_title": "Build your own app on Doichain names",
+    "news_noc_text": "Names-On-Chain is a workshop in five lessons: look up, register and trade names straight from the browser, with PSBTs signed in DoiWallet. Every lesson is a small app, source included.",
+    "news_noc_open": "Open the workshop",
+    "news_noc_source": "Source on GitHub",
     "footer_built_with": "Built with",
     "footer_upstream_title": "This explorer is a fork of Iquidus Explorer",
     "footer_blocks": "blocks",

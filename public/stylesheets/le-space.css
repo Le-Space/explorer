@@ -205,3 +205,103 @@ hr { border-top-color: var(--ls-horizon); }
 @media (max-width: 767.98px) {
   .footer-credit { justify-content: flex-start; }
 }
+
+/* ---- News banner --------------------------------------------------------
+   One item at a time on the front page. Coral is the brand's primary accent
+   and the only thing on the page that glows, so it carries the badge and the
+   call to action and nothing else competes; the card itself stays on the
+   panel colour the rest of the page uses. */
+.news-row { margin-bottom: 1rem; }
+
+.news-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  padding: 1rem 2.75rem 1rem 1.25rem;
+  background: linear-gradient(180deg, #17202F 0%, var(--ls-nebula) 100%);
+  border: 1px solid var(--ls-horizon);
+  /* A coral edge rather than a coral fill: the page keeps its calm, the eye
+     still goes here first. */
+  border-left: 3px solid var(--ls-coral);
+  border-radius: 6px;
+}
+
+.news-badge {
+  flex: none;
+  align-self: flex-start;
+  background: var(--ls-coral);
+  color: #1A0E0C;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  margin-top: 0.15rem;
+}
+
+.news-main { flex: 1 1 22rem; min-width: 0; }
+.news-title {
+  color: var(--ls-starlight);
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.2rem;
+}
+.news-text { color: var(--ls-stardust); font-size: 0.88rem; line-height: 1.5; }
+
+.news-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+.news-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--ls-coral);
+  color: #1A0E0C;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 5px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.news-cta:hover, .news-cta:focus {
+  background: #FF8474;
+  color: #1A0E0C;
+  text-decoration: none;
+}
+.news-arrow { transition: transform .15s ease; }
+.news-cta:hover .news-arrow { transform: translateX(2px); }
+
+.news-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ls-stardust);
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.news-source:hover, .news-source:focus { color: var(--ls-cyan); text-decoration: none; }
+
+.news-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.55rem;
+  background: none;
+  border: 0;
+  color: #6E7A8F;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0.1rem 0.3rem;
+  cursor: pointer;
+}
+.news-close:hover, .news-close:focus { color: var(--ls-starlight); }
+
+@media (prefers-reduced-motion: reduce) {
+  .news-arrow { transition: none; }
+  .news-cta:hover .news-arrow { transform: none; }
+}
