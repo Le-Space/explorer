@@ -226,7 +226,8 @@
                     "h": "Server-Protokolle",
                     "p": [
                             "Unser Server schreibt zu jedem Abruf eine Zeile in eine Protokolldatei: Zeitpunkt, angefragte Adresse, HTTP-Status, übertragene Datenmenge, verweisende Seite und Browserkennung.",
-                            "Die dort vermerkte IP-Adresse ist <strong>nicht Ihre</strong>, sondern die des Cloudflare-Rechners, der die Anfrage an uns weitergereicht hat. Unser Server ist ausschließlich über Cloudflare erreichbar, und wir setzen keine Technik ein, die Ihre ursprüngliche Adresse wiederherstellt — Ihre IP-Adresse liegt uns daher nicht vor.",
+                            "Rufen Sie diese Seite unter ihrer gewohnten Adresse auf, führt Ihr Weg über Cloudflare. Die in der Protokollzeile vermerkte IP-Adresse ist dann <strong>nicht Ihre</strong>, sondern die des Cloudflare-Rechners, der die Anfrage weitergereicht hat; eine Technik, die Ihre ursprüngliche Adresse wiederherstellt, setzen wir nicht ein.",
+                "Ausschließen können wir es jedoch nicht: Unser Server ist daneben unter seiner eigenen IP-Adresse unmittelbar erreichbar. Wer ihn auf diesem Weg anspricht — beim gewöhnlichen Aufruf dieser Seite geschieht das nicht —, erscheint mit seiner echten IP-Adresse in derselben Protokolldatei, für die dieselbe Frist gilt.",
                             "Zweck ist der Betrieb der Website und die Fehlersuche (Art. 6 Abs. 1 lit. f DSGVO). Die Protokolle werden täglich gewechselt und nach 14 Tagen gelöscht."
                     ]
             },
@@ -258,7 +259,7 @@
             {
                     "h": "Was Sie suchen und aufrufen",
                     "p": [
-                            "Die Eingabe aus der Suchzeile senden wir als POST-Anfrage. Der Suchbegriff steht damit weder in der Adresszeile noch in unseren Protokollen. Die Trefferseite, auf die Sie anschließend gelangen, trägt den gefundenen Wert allerdings in ihrer Adresse — etwa <code>/address/…</code>, <code>/tx/…</code> oder <code>/name/…</code>. Diese Adresse erscheint in der oben beschriebenen Protokollzeile und wird dort nach 14 Tagen gelöscht; verknüpft ist sie mit der IP-Adresse von Cloudflare, nicht mit Ihrer.",
+                            "Die Eingabe aus der Suchzeile senden wir als POST-Anfrage. Der Suchbegriff steht damit weder in der Adresszeile noch in unseren Protokollen. Die Trefferseite, auf die Sie anschließend gelangen, trägt den gefundenen Wert allerdings in ihrer Adresse — etwa <code>/address/…</code>, <code>/tx/…</code> oder <code>/name/…</code>. Diese Adresse erscheint in der oben beschriebenen Protokollzeile und wird dort nach 14 Tagen gelöscht; verknüpft ist sie mit der IP-Adresse, die bei uns ankommt — beim Aufruf über die gewohnte Adresse also mit der von Cloudflare.",
                             "Blockchain-Adressen und Namen können im Einzelfall Rückschlüsse auf Personen zulassen. Wenn Sie auch das vermeiden möchten, können Sie den Explorer über einen Dienst aufrufen, der Ihre Herkunft verbirgt, oder eine eigene Instanz betreiben — der Quelltext ist offen."
                     ]
             },
@@ -284,7 +285,7 @@
                     "h": "Ihre Rechte",
                     "p": [
                             "Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie das Recht, Verarbeitungen auf Grundlage berechtigter Interessen zu widersprechen (Art. 21). Außerdem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren (Art. 77 DSGVO), etwa bei der Behörde an Ihrem Wohnort.",
-                            "Da wir Ihre IP-Adresse nicht erheben und keine Benutzerkonten führen, können wir einzelne Besucherinnen und Besucher nicht identifizieren. Auf eine Auskunftsanfrage können wir deshalb in aller Regel nur mitteilen, dass zu Ihnen keine Daten bei uns vorliegen (Art. 11 DSGVO)."
+                            "Beim gewöhnlichen Aufruf über Cloudflare kommt keine IP-Adresse von Ihnen bei uns an, und Benutzerkonten führen wir nicht; einzelne Besucherinnen und Besucher können wir deshalb in aller Regel nicht identifizieren. Auf eine Auskunftsanfrage können wir dann nur mitteilen, dass zu Ihnen keine Daten bei uns vorliegen (Art. 11 DSGVO)."
                     ]
             }
     ]

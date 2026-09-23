@@ -224,7 +224,8 @@
                     "h": "Server logs",
                     "p": [
                             "For every request, our server writes one line to a log file: the time, the address requested, the HTTP status, the number of bytes transferred, the referring page and the browser identification.",
-                            "The IP address recorded there is <strong>not yours</strong>. It is the address of the Cloudflare machine that passed the request on to us. Our server is reachable only through Cloudflare, and we run nothing that restores your original address — so your IP address is not available to us.",
+                            "If you open this site at its usual address, your request travels through Cloudflare. The IP address recorded in the log line is then <strong>not yours</strong> but that of the Cloudflare machine which passed the request on; we run nothing that restores your original address.",
+                "We cannot rule it out entirely, though: our server is also reachable directly at its own IP address. Anyone who approaches it that way — which is not what happens when you open this site normally — appears in the same log file, under the same retention.",
                             "The purpose is running the website and diagnosing faults (Art. 6(1)(f) GDPR). The logs are rotated daily and deleted after 14 days."
                     ]
             },
@@ -256,7 +257,7 @@
             {
                     "h": "What you search for and open",
                     "p": [
-                            "What you type into the search field is sent as a POST request. The search term therefore appears neither in the address bar nor in our logs. The result page you are then taken to does, however, carry the value found in its address — for example <code>/address/…</code>, <code>/tx/…</code> or <code>/name/…</code>. That address appears in the log line described above and is deleted there after 14 days; it is associated with Cloudflare's IP address, not with yours.",
+                            "What you type into the search field is sent as a POST request. The search term therefore appears neither in the address bar nor in our logs. The result page you are then taken to does, however, carry the value found in its address — for example <code>/address/…</code>, <code>/tx/…</code> or <code>/name/…</code>. That address appears in the log line described above and is deleted there after 14 days; it is associated with whichever IP address reaches us — for a visit through the usual address, Cloudflare's.",
                             "Blockchain addresses and names can, in individual cases, allow conclusions about people. If you wish to avoid even that, you can reach the explorer through a service that hides where you come from, or run your own instance — the source code is open."
                     ]
             },
@@ -282,7 +283,7 @@
                     "h": "Your rights",
                     "p": [
                             "You have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18), data portability (Art. 20) and the right to object to processing based on legitimate interests (Art. 21). You may also lodge a complaint with a data protection supervisory authority (Art. 77 GDPR), for instance the one where you live.",
-                            "Because we do not collect your IP address and keep no user accounts, we cannot identify individual visitors. In response to a request for access we will therefore, as a rule, only be able to tell you that we hold no data about you (Art. 11 GDPR)."
+                            "On an ordinary visit through Cloudflare no IP address of yours reaches us, and we keep no user accounts; as a rule we therefore cannot identify individual visitors. In response to a request for access we can then only tell you that we hold no data about you (Art. 11 GDPR)."
                     ]
             }
     ]
