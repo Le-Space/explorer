@@ -322,5 +322,11 @@
     "mining_col_blocks": "Blöcke",
     "mining_col_share": "Anteil",
     "mining_rest": "übrige",
-    "mining_no_data": "Keine Daten für diesen Zeitraum."
+    "mining_no_data": "Keine Daten für diesen Zeitraum.",
+    "heavy_unavailable": "Diese Seite zeigt Abstimmungen über die Blockbelohnung. Sie gehört zu den „heavy\"-Erweiterungen, die diese Kette nicht führt — es liegen keine Daten dafür vor.",
+
+    // Candle tooltip on a market page; the rest of the mkt_* keys
+    // predate it.
+    "mkt_open": "Eröffnung",
+    "mkt_close": "Schluss"
 }

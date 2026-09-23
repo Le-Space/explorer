@@ -65,7 +65,6 @@ html(lang=lang)
     //- this page needs a third party to know who is reading it.
     link(rel='stylesheet', href='/stylesheets/fonts.css?v=' + settings.asset_version)
     link(rel='stylesheet', href='/themes/' + settings.theme + '/bootstrap.min.css')
-    link(rel='stylesheet', href='/vendor/jqplot/jquery.jqplot.css')
     link(rel='stylesheet', href='/vendor/flags-css/css/flag-icon.min.css')
     link(rel='stylesheet', href='/vendor/datatables/dataTables.bootstrap4-1.10.19.min.css')
     link(rel='stylesheet', href='/vendor/font-awesome/css/font-awesome.min.css')
@@ -75,13 +74,9 @@ html(lang=lang)
     link(rel='stylesheet', href='/stylesheets/le-space.css?v=' + settings.asset_version)
     script(src='/vendor/jquery/jquery-1.11.0.min.js')
     script(src='/vendor/bootstrap/bootstrap.bundle-4.5.0.min.js')
-    script(src='/vendor/jqplot/jquery.jqplot.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.dateAxisRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.ohlcRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.highlighter.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.pieRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.barRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.categoryAxisRenderer.min.js')
+    //- No charting library is loaded here any more. jqPlot (1.9pre, 2013)
+    //- and the Chart.js 1.x API used to load on every page of the site to
+    //- serve four of them; each of those now pulls Chart.js 4 itself.
     script(src='/vendor/moment/moment-2.9.0.min.js')
     script(src='/vendor/datatables/jquery.dataTables-1.10.9.min.js')
     script(src='/vendor/datatables/dataTables.responsive-1.0.1.js')
@@ -89,7 +84,6 @@ html(lang=lang)
     script(src='/javascripts/news-banner.js?v=' + settings.asset_version)
     script(src='/javascripts/search-hint.js?v=' + settings.asset_version)
     script(src='/vendor/datatables/dataTables.bootstrap4-1.10.19.min.js')
-    script(src='/javascripts/chart.js')
     script.
       $(document).ready(function(){
         $('##{active}').addClass('active');

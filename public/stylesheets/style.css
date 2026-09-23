@@ -64,10 +64,6 @@ body {
 	margin: 0;
 	margin-left: 10px;
 }
-#chart3 .jqplot-xaxis {
-	display: none;
-}
-
 .data {
 	display: block;
 	overflow: hidden;

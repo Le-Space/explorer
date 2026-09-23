@@ -1,41 +1,15 @@
 extends layout
 
-block content   
-  script.
-    $(document).ready(function(){
-      var data = [
-      ['Top 1-25', !{dista.percent}],['Top 26-50', !{distb.percent}],['Top 51-75', !{distc.percent}],['Top 76-100', !{distd.percent}],['101+', !{diste.percent}]
-      ];
-      var pieWealthDist = $.jqplot('pieChart', [data],
-        {
-          seriesColors: [ "#d9534f", "#5cb85c", "#428bca", "#222", "#CCC"],
-          series: [{
-            // Make this a pie chart.
-            renderer: $.jqplot.PieRenderer,
-            rendererOptions: {
-              diameter: 260,
-              padding: 0,
-              sliceMargin: 4, 
-              // Put data labels on the pie slices.
-              // By default, labels show the percentage of the slice.
-              showDataLabels: false,
-            }
-          }],
-          grid: {borderWidth:0, shadow:false},
-          legend: {
-            show: false,
-            rendererOptions: {
-                numberRows: 1,
-                border: 'none'
-            },
-            location: 's'
-          }
-        }
-      );
-    });
-    $(window).resize(function () { 
-      pieWealthDist.replot( { resetAxes: false } );
-    });  
+block content
+  //- Wealth distribution, drawn with the same library as every other chart
+  //- here since #29. It was jqPlot 1.9pre -- last released in 2013, loaded on
+  //- every page of the site for this one pie, and its colours were literals
+  //- that predate the brand palette.
+  //-
+  //- The old resize handler called replot() on a variable declared inside the
+  //- ready callback, so it threw on every resize; Chart.js is responsive on
+  //- its own and needs no handler at all.
+
   .row
     .col-xs-12.col-md-8
       .tabpanel
@@ -63,28 +37,28 @@ block content
             tbody
               tr
                 th
-                  div.pull-left(style='background-color:#d9534f;width:20px;height:20px;margin-right:6px;')
+                  span.richlist-swatch(class='richlist-swatch-1')
                   span #{settings.locale.rl_top25}
                 - var total = parseFloat(dista.total).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})
                 td #{total}
                 td.text-center #{parseFloat(dista.percent).toFixed(2)}
               tr
                 th
-                  div.pull-left(style='background-color:#5cb85c;width:20px;height:20px;margin-right:6px;')
+                  span.richlist-swatch(class='richlist-swatch-2')
                   span #{settings.locale.rl_top50}
                 - var total = parseFloat(distb.total).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})
                 td #{total}
                 td.text-center #{parseFloat(distb.percent).toFixed(2)}
               tr
                 th
-                  div.pull-left(style='background-color:#428bca;width:20px;height:20px;margin-right:6px;')
+                  span.richlist-swatch(class='richlist-swatch-3')
                   span #{settings.locale.rl_top75}
                 - var total = parseFloat(distc.total).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})
                 td #{total}
                 td.text-center #{parseFloat(distc.percent).toFixed(2)}
               tr
                 th
-                  div.pull-left(style='background-color:#222;width:20px;height:20px;margin-right:6px;')
+                  span.richlist-swatch(class='richlist-swatch-4')
                   span #{settings.locale.rl_top100}
                 - var total = parseFloat(distd.total).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})
                 td #{total}
@@ -95,5 +69,18 @@ block content
                 td 
                 td.text-center #{(100 - parseFloat(distd.percent)).toFixed(2)}
         center
-          div#pieChart(style="width:300px;height:305px;margin:0px;")
+          .richlist-chart
+            canvas#pieChart(role='img', aria-label=settings.locale.rl_wealth)
+      -
+        var wealth = [
+          {label: 'Top 1-25',  value: parseFloat(dista.percent)},
+          {label: 'Top 26-50', value: parseFloat(distb.percent)},
+          {label: 'Top 51-75', value: parseFloat(distc.percent)},
+          {label: 'Top 76-100', value: parseFloat(distd.percent)},
+          {label: '101+', value: parseFloat(diste.percent)}
+        ];
+      script
+        != 'window.WEALTH_DIST = ' + JSON.stringify(wealth) + ';'
+      script(src='/vendor/chartjs/chart.umd-4.5.1.min.js')
+      script(src='/javascripts/richlist-chart.js?v=' + settings.asset_version)
   .row.footer-margin
