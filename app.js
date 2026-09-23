@@ -312,7 +312,13 @@ app.use('/ext/connections', function(req,res){
 
 // locals
 app.set('title', settings.title);
-app.set('iquidus_version', package_metadata.version);
+// This fork's own version: shown in the footer, and the same string the git
+// tag carries.
+app.set('version', package_metadata.version);
+// What was forked, pinned as the fact it is. This used to read
+// package_metadata.version, so the moment this fork took a version number of
+// its own, the footer would have credited upstream with it.
+app.set('upstream_version', '1.7.4');
 app.set('symbol', settings.symbol);
 app.set('coin', settings.coin);
 app.set('locale', locale);
