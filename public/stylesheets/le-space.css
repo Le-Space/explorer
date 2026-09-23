@@ -314,3 +314,92 @@ hr { border-top-color: var(--ls-horizon); }
   color: var(--ls-starlight);
   border-color: var(--ls-cyan);
 }
+
+/* ---- First-visit hint under the search field ----------------------------
+   A note that points back up at the field, not a dialog: it takes no focus,
+   blocks nothing, and one labelled checkbox ends it for good. */
+.search-hint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin: 0.85rem auto 0;
+  padding: 0.55rem 0.9rem;
+  background: var(--ls-nebula);
+  border: 1px solid var(--ls-horizon);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--ls-stardust);
+  text-align: left;
+  /* Entry: the script adds .is-shown a frame later, so this has a state to
+     move from. */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.search-hint.is-shown { opacity: 1; transform: none; }
+
+/* The pointer: a triangle on the top edge, nudging upward at the field. */
+.search-hint-pointer {
+  position: absolute;
+  top: -7px;
+  left: 2.25rem;
+  width: 12px;
+  height: 7px;
+  background: var(--ls-coral);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  animation: search-hint-nudge 1.9s ease-in-out infinite;
+}
+@keyframes search-hint-nudge {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-3px); }
+}
+
+.search-hint-example {
+  background: rgba(255, 107, 91, .12);
+  border: 1px solid var(--ls-coral);
+  color: var(--ls-coral);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.search-hint-example:hover, .search-hint-example:focus {
+  background: var(--ls-coral);
+  color: #1A0E0C;
+}
+
+.search-hint-mute {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0 0.25rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--ls-horizon);
+  color: #6E7A8F;
+  font-size: 0.78rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+.search-hint-mute:hover { color: var(--ls-stardust); }
+.search-hint-mute-box { margin: 0; cursor: pointer; }
+
+/* The field itself glows three times and then stops -- an animation that never
+   ends is a distraction, not a hint. The class goes on the field from the
+   script: the hint sits after the field in the document, so no selector here
+   can reach back to it. */
+#index-search .form-control.is-hinted {
+  animation: search-hint-glow 1.6s ease-in-out 3;
+}
+@keyframes search-hint-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 91, 0); }
+  50%      { box-shadow: 0 0 0 3px rgba(255, 107, 91, .18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-hint { transition: none; }
+  .search-hint-pointer { animation: none; }
+  #index-search .form-control.is-hinted { animation: none; }
+}
