@@ -403,3 +403,69 @@ hr { border-top-color: var(--ls-horizon); }
   .search-hint-pointer { animation: none; }
   #index-search .form-control.is-hinted { animation: none; }
 }
+
+/* ------------------------------------------------------------------------
+   Imprint and privacy notice.
+
+   These are the only pages here meant to be read as prose rather than
+   scanned as a table, so they get what prose needs and the rest of the
+   explorer does not: a measure short enough to find the next line, room
+   between paragraphs, and headings that separate sections without shouting.
+   ------------------------------------------------------------------------ */
+.legal-body {
+  /* ~70 characters. Wider than this and the eye loses the line start. */
+  max-width: 44rem;
+  color: var(--ls-stardust);
+  line-height: 1.65;
+}
+
+.legal-body h2 {
+  /* Below the card header in weight, above the text -- a section marker, not
+     a second title. Numbered by the template, so the number aligns with it. */
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  margin: 2rem 0 .6rem;
+}
+.legal-body h2:first-child { margin-top: 0; }
+
+.legal-body p { margin-bottom: 1rem; }
+.legal-body a { color: var(--ls-cyan); }
+.legal-body a:hover, .legal-body a:focus { color: var(--ls-coral); }
+.legal-body strong { color: var(--ls-starlight); }
+
+/* Cookie names, storage keys and URL shapes are identifiers: read character
+   by character, so they take the same face the hashes do. */
+.legal-body code {
+  font-size: .92em;
+  color: var(--ls-starlight);
+  background-color: rgba(255, 255, 255, .05);
+  padding: .08em .35em;
+  border-radius: 3px;
+}
+
+.legal-updated {
+  margin-top: 2rem;
+  padding-top: .9rem;
+  border-top: 1px solid var(--ls-horizon);
+  font-size: .85rem;
+  color: var(--ls-stardust);
+  opacity: .75;
+}
+
+/* The two links in the footer, sharing a row with the social icons. Set as
+   text rather than icons: an imprint has to be recognisable as one, which a
+   glyph is not. */
+.footer-legal {
+  padding-left: .55rem !important;
+  padding-right: .55rem !important;
+  white-space: nowrap;
+}
+
+/* The footer is fixed to the bottom, and below the md breakpoint it wraps from
+   one row to three -- which is exactly where these pages end, so the last line
+   ("Stand: ...") would sit behind it. The column's 4% margin is a percentage of
+   the width and shrinks on a phone just when more room is needed. */
+@media (max-width: 767.98px) {
+  .legal-body { padding-bottom: 5rem; }
+}
