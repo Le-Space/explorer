@@ -14,8 +14,21 @@
 *   --timeout N  milliseconds between blocks (default: settings.update_timeout)
 *
 * It is safe to interrupt and repeat: heights already written are skipped
-* unless --force is given. It takes the same db_index lock the indexer takes,
-* so it will not run while a sync is in progress.
+* unless --force is given.
+*
+* On mutual exclusion with the indexer, which is easy to overstate: the lock
+* lib/database.js uses is conditional on settings.lock_during_index, and that
+* defaults to false. Where it is off -- which is the common case -- this script
+* cannot keep a sync from running at the same time, and a chain that triggers
+* syncing from blocknotify will happily start one mid-run. That is safe for
+* this collection, because a block is written by height with an upsert and
+* writing it twice yields the same document; what it does cost is RPC load on
+* the daemon, two calls per block on top of whatever the sync is doing.
+*
+* Where lock_during_index is on, the lock is taken and honoured in both
+* directions -- and for that reason it is only ever created when the setting
+* says so. A lock file left behind by a crashed run would otherwise make every
+* later sync skip while looking perfectly healthy.
 */
 var mongoose = require('mongoose')
   , db = require('../lib/database')
@@ -53,10 +66,13 @@ var b = parseInt(positional[2], 10);
 if (mode !== 'days' && mode !== 'blocks' && mode !== 'range') { usage(); }
 if (mode === 'range' ? (isNaN(a) || isNaN(b)) : isNaN(a)) { usage(); }
 
-// The indexer's lock, so the two cannot walk the same heights at once.
+// The indexer's own lock file, taken under the indexer's own condition --
+// see the note at the top of this file for why the condition matters.
 var lockfile = 'tmp/db_index.pid';
+var use_lock = (settings.lock_during_index == true);
 
 function create_lock(cb) {
+  if (!use_lock) { return cb(); }
   fs.appendFile(lockfile, process.pid.toString(), function (err) {
     if (err) {
       console.log('Error: unable to create %s', lockfile);
@@ -67,6 +83,7 @@ function create_lock(cb) {
 }
 
 function remove_lock(cb) {
+  if (!use_lock) { return cb(); }
   fs.unlink(lockfile, function (err) {
     if (err) { console.log('unable to remove %s', lockfile); }
     return cb();
@@ -85,9 +102,13 @@ dbString = dbString + ':' + settings.dbsettings.port;
 dbString = dbString + '/' + settings.dbsettings.database;
 
 fs.exists(lockfile, function (exists) {
-  if (exists) {
+  if (use_lock && exists) {
     console.log('index lock exists -- a sync is running, or a previous one was killed');
     process.exit(1);
+  }
+  if (!use_lock) {
+    console.log('note: lock_during_index is off, so a sync may run alongside this.');
+    console.log('      Harmless for the blocks collection; it does add RPC load.');
   }
   create_lock(function () {
     mongoose.connect(dbString, function (err) {
