@@ -42,6 +42,30 @@ the global one for exactly that response. See `lib/i18n.js`.
 search through ElectrumX, a name page at `/name/<name>` with expiry and history,
 and a share button.
 
+### Licence
+
+This project is **BSD-3-Clause**, Copyright (c) 2015 Iquidus Technology and
+Luke Williams. `LICENSE` carries the text verbatim and the original README
+reproduces it below; neither has been altered by this fork.
+
+**Changes made in this fork are offered under the same licence.**
+
+Third-party components keep their own notices where they sit: the Bootswatch
+themes under `public/themes/` are MIT (Copyright 2012-2020 Thomas Park), as is
+the Bootstrap they build on, and `public/javascripts/` and `public/vendor/`
+carry Chart.js, jQuery and jqplot with the headers their authors wrote. None of
+them were stripped: of the 84 files upstream that carry a copyright notice, all
+84 still carry it here.
+
+Two notes on what the licence does *not* ask for, since both are commonly
+assumed. It requires no record of changes -- that is Apache 2.0 -- and running
+a public instance is not redistribution, so the clause about binary form does
+not apply to the hosted explorer.
+
+One thing it does ask for: clause 3 forbids using the Iquidus name to endorse
+or promote derived work. The footer therefore names the upstream as plain
+attribution and not as a "Powered by" badge.
+
 ---
 
 Iquidus Explorer - 1.7.4

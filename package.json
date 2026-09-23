@@ -2,6 +2,7 @@
   "name": "explorer",
   "version": "1.7.4",
   "private": true,
+  "license": "BSD-3-Clause",
   "scripts": {
     "start": "node --stack-size=10000 ./bin/cluster",
     "stop": "kill -2 $(cat tmp/cluster.pid)",
