@@ -52,7 +52,15 @@ block content
               br
             if settings.legal.email
               = settings.locale.imprint_email + ': '
+              //- Cloudflare's Email Address Obfuscation rewrites any address it
+              //- finds into a placeholder that only becomes readable once its
+              //- own script has run. On an imprint that is a problem: Sect. 5
+              //- DDG wants the address immediately available, and without
+              //- JavaScript the page would show "[email protected]". These two
+              //- comments are Cloudflare's documented opt-out for one element.
+              | <!--email_off-->
               a(href='mailto:' + settings.legal.email)= settings.legal.email
+              | <!--/email_off-->
 
           if settings.legal.vat_id
             h2= settings.locale.imprint_h_vat
@@ -96,7 +104,11 @@ block content
               br
             if pmail
               = settings.locale.imprint_email + ': '
+              //- Readable without JavaScript, for the same reason as the
+              //- imprint: this is the address a data-protection request goes to.
+              | <!--email_off-->
               a(href='mailto:' + pmail)= pmail
+              | <!--/email_off-->
 
           each section, i in settings.locale.privacy_sections
             h2 #{i + 2}. #{section.h}
