@@ -85,6 +85,7 @@ html(lang=lang)
     script(src='//cdn.datatables.net/responsive/1.0.1/js/dataTables.responsive.js')
     script(src='/javascripts/name-share.js?v=' + settings.asset_version)
     script(src='/javascripts/news-banner.js?v=' + settings.asset_version)
+    script(src='/javascripts/search-hint.js?v=' + settings.asset_version)
     script(src='//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js')
     script(src='/javascripts/chart.js')
     script.
@@ -327,6 +328,21 @@ html(lang=lang)
           #index-search.form-group.d-flex.justify-content-center
             input.form-control(type='text', name='search', placeholder=settings.locale.ex_search_message, style='min-width:80%;margin-right:5px;')
             button.btn.btn-success(type='submit') #{settings.locale.ex_search_button}
+          //- A first-visit hint pointing back up at the field. Only on the front
+          //- page: whoever arrived on a name page has already seen one of these,
+          //- and the search box is on every page. Ships hidden; the script decides,
+          //- so a visitor who has dismissed it never watches it appear and vanish.
+          if typeof active !== 'undefined' && active === 'home'
+            #search-hint.search-hint.d-none(data-hint-id='name-search-1', role='note')
+              span.search-hint-pointer(aria-hidden='true')
+              span.search-hint-text=settings.locale.hint_name_search
+              button.search-hint-example(type='button')=settings.locale.hint_name_example
+              //- One control, and it is the honest one: a labelled checkbox that
+              //- says what it does. A bare x would leave the reader guessing
+              //- whether the hint comes back.
+              label.search-hint-mute(for='search-hint-mute')
+                input#search-hint-mute.search-hint-mute-box(type='checkbox')
+                span=settings.locale.hint_dismiss
     block content
     div(class=footerClasses, role='navigation')
       .col-md-4.navbar-nav
