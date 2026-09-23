@@ -220,4 +220,75 @@ describe('explorer', function() {
       expect(lib.summarize_block_txs(undefined).reward).toEqual(0);
     });
   });
+
+  describe('hashrate_from_blocks', function() {
+
+    // 0x300 - 0x100 = 512 units of work across 8 seconds.
+    var simple = [
+      {time: 1000, chainwork: '100'},
+      {time: 1004, chainwork: '200'},
+      {time: 1008, chainwork: '300'}
+    ];
+
+    it('should divide the work of the window by its timespan', function() {
+      expect(lib.hashrate_from_blocks(simple)).toEqual(64);
+    });
+
+    it('should span max and min time, not first and last', function() {
+      // Block times are not monotonic, and on this chain a block's nTime is
+      // the previous block's find time -- so the last row is regularly not
+      // the latest second in the window. Same work, same span, same answer.
+      var jumbled = [
+        {time: 1000, chainwork: '100'},
+        {time: 1008, chainwork: '200'},
+        {time: 1004, chainwork: '300'}
+      ];
+      expect(lib.hashrate_from_blocks(jumbled)).toEqual(64);
+    });
+
+    it('should read chainwork as hex, not as a decimal string', function() {
+      // 0x10 is 16, not 10: a decimal reading would answer 5 here.
+      expect(lib.hashrate_from_blocks([
+        {time: 0, chainwork: '0'}, {time: 2, chainwork: '10'}
+      ])).toEqual(8);
+    });
+
+    it('should carry a full-width chainwork value', function() {
+      // The real ones are 64 hex characters and far beyond a double's
+      // integer range; the subtraction has to happen before that conversion.
+      var lo = '00000000000000000000000000000000000000000002bf8b03190dfb372d328f';
+      var hi = '00000000000000000000000000000000000000000002bf8b03190dfb372d428f';
+      // The two differ by 0x1000 = 4096, over 8 seconds.
+      expect(lib.hashrate_from_blocks([
+        {time: 100, chainwork: lo}, {time: 108, chainwork: hi}
+      ])).toEqual(512);
+    });
+
+    it('should answer zero when there is no timespan to divide by', function() {
+      expect(lib.hashrate_from_blocks([
+        {time: 500, chainwork: '100'}, {time: 500, chainwork: '900'}
+      ])).toEqual(0);
+    });
+
+    it('should answer zero for too few blocks', function() {
+      expect(lib.hashrate_from_blocks([])).toEqual(0);
+      expect(lib.hashrate_from_blocks([{time: 1, chainwork: '100'}])).toEqual(0);
+      expect(lib.hashrate_from_blocks(undefined)).toEqual(0);
+    });
+
+    it('should answer zero rather than guess when chainwork is missing or malformed', function() {
+      expect(lib.hashrate_from_blocks([
+        {time: 0, chainwork: ''}, {time: 8, chainwork: '300'}
+      ])).toEqual(0);
+      expect(lib.hashrate_from_blocks([
+        {time: 0, chainwork: 'not hex'}, {time: 8, chainwork: '300'}
+      ])).toEqual(0);
+    });
+
+    it('should answer zero if the window does not gain work', function() {
+      expect(lib.hashrate_from_blocks([
+        {time: 0, chainwork: '300'}, {time: 8, chainwork: '100'}
+      ])).toEqual(0);
+    });
+  });
 });
