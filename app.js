@@ -345,6 +345,10 @@ app.set('headerlogo', settings.headerlogo);
 app.set('headerlogo_url', settings.headerlogo_url);
 app.set('headerlabel', settings.headerlabel || settings.coin);
 app.set('repo_url', settings.repo_url);
+// The operator's details, read by the footer and by views/legal.pug. Without
+// this line the routes still answer -- they read lib/settings directly -- but
+// the view sees no `settings.legal` and the imprint throws on its first field.
+app.set('legal', settings.legal);
 // Our own css/js are linked without a version, so a browser -- and Cloudflare
 // in front of it -- keeps serving the old copy after a change. A stamp that
 // changes on every start makes the URL new, which is all a cache keys on.
