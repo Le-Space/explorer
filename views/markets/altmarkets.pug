@@ -1,47 +1,29 @@
 extends menu
- 
+
+//- The 24-hour candlestick. It was jqPlot's OHLCRenderer; see
+//- public/javascripts/market-candles.js for how Chart.js draws the same shape
+//- from floating bars without adding a charting extension and a date adapter.
+
 block market_view
   script.
     $(document).ready(function(){
       $('#summary-panel').hide();
-      var ohlc = #{marketdata.data.chartdata};
-      var plot2 = $.jqplot('chart',[ohlc],{
-        seriesDefaults:{yaxis:'y2axis'},
-        axes: {
-          xaxis: {
-            renderer:$.jqplot.DateAxisRenderer,
-            tickOptions:{formatString:'%R'},
-            tickInterval: "2 hours",
-            
-          },
-          y2axis: {
-            tickOptions:{formatString:'%.8f'},
-          }
-        },
-        // To make a candle stick chart, set the "candleStick" option to true.
-        series: [
-          {
-            renderer:$.jqplot.OHLCRenderer,
-            rendererOptions:{ candleStick:true }
-          }
-        ],
-        highlighter: {
-          show: true,
-          showMarker:false,
-          tooltipAxes: 'xy',
-          yvalues: 4,
-          formatString:'<table class="jqplot-highlighter"> \
-          <tr><td>time:</td><td>%s</td></tr> \
-          <tr><td>open:</td><td>%s</td></tr> \
-          <tr><td>hi:</td><td>%s</td></tr> \
-          <tr><td>low:</td><td>%s</td></tr> \
-          <tr><td>close:</td><td>%s</td></tr></table>'
-        }
-      }); 
-      $(window).resize(function () { 
-        plot2.replot( { resetAxes: false } );
-      });
     });
+  -
+    var marketI18n = {
+      locale: lang === 'de' ? 'de-DE' : 'en-GB',
+      range: settings.locale.mkt_high + ' / ' + settings.locale.mkt_low,
+      body: settings.locale.mkt_open + ' / ' + settings.locale.mkt_close,
+      open: settings.locale.mkt_open,
+      high: settings.locale.mkt_high,
+      low: settings.locale.mkt_low,
+      close: settings.locale.mkt_close
+    };
+  script
+    != 'window.MARKET_OHLC = ' + JSON.stringify(marketdata.data.chartdata || []) + ';'
+    != 'window.MARKET_I18N = ' + JSON.stringify(marketI18n) + ';'
+  script(src='/vendor/chartjs/chart.umd-4.5.1.min.js')
+  script(src='/javascripts/market-candles.js?v=' + settings.asset_version)
   .row
     .col-md-12
       #chart-panel.panel.panel-default
@@ -50,7 +32,8 @@ block market_view
           a(href='#')
             span.fa.fa-th-list.pull-right.view-summary.iquidus.market-toggle(data-toggle='tooltip', data-placement='bottom', title=settings.locale.mkt_view_chart) 
         .panel-body
-          div#chart(style="width:100%;height:300px;")
+          .market-chart
+            canvas#marketChart(role='img')
       #summary-panel.panel.panel-default
         .panel-heading
           h5 #{settings.locale.altmarkets} - #{marketdata.coin}/#{marketdata.exchange} - #{settings.locale.mkt_hours}

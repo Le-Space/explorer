@@ -257,11 +257,25 @@ router.get('/network', function(req, res) {
   res.render('network', {active: 'network'});
 });
 
+/**
+* The reward page, which only a chain running the `heavy` extensions has
+* anything to put on.
+*
+* It answered 500 on every instance: the db.get_stats wrapper had been
+* commented out at some point and the `stats` it bound was left behind, in a
+* console.log and in the render. Restored rather than deleted, because the
+* template does use it.
+*
+* The heavy lookup is guarded now as well. Where the extensions are off there
+* is no document to read, and `heavy.votes` on nothing is the same 500 by a
+* different route -- the view says the page is unavailable instead.
+*/
 router.get('/reward', function(req, res){
-  //db.get_stats(settings.coin, function (stats) {
-    console.log(stats);
+  db.get_stats(settings.coin, function (stats) {
     db.get_heavy(settings.coin, function (heavy) {
-      //heavy = heavy;
+      if (!heavy || !heavy.votes) {
+        return res.render('reward', { active: 'reward', stats: stats, heavy: null, votes: [] });
+      }
       var votes = heavy.votes;
       votes.sort(function (a,b) {
         if (a.count < b.count) {
@@ -273,9 +287,9 @@ router.get('/reward', function(req, res){
         }
       });
 
-      res.render('reward', { active: 'reward', stats: stats, heavy: heavy, votes: heavy.votes });
+      res.render('reward', { active: 'reward', stats: stats, heavy: heavy, votes: votes });
     });
-  //});
+  });
 });
 
 router.get('/tx/:txid', function(req, res) {

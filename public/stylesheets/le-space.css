@@ -543,3 +543,57 @@ hr { border-top-color: var(--ls-horizon); }
   overflow-x: auto;
   white-space: nowrap;
 }
+
+/* The wealth doughnut on /richlist. Chart.js sizes itself to its container
+   once maintainAspectRatio is off, so the container is what carries the size
+   -- the old chart set 300x305 on the div itself. */
+.richlist-chart { position: relative; width: 100%; max-width: 320px; height: 320px; margin: 0 auto; }
+
+/* /reward. Sized containers for the same reason the mining charts have them:
+   Chart.js fills its parent once maintainAspectRatio is off. */
+.reward-donut { position: relative; width: 150px; height: 150px; margin: 0 auto 1rem; }
+.reward-chart { position: relative; width: 100%; height: 300px; margin-top: 1.5rem; }
+
+/* The legend beside the chart. These used to be inline background-colour
+   literals in the template, next to a chart that carried its own copies of the
+   same values -- so the two could drift. Both read the palette now. */
+.reward-legend { margin-top: 1.5rem; }
+.reward-swatch { display: inline-block; width: 20px; height: 20px; border-radius: 3px; }
+.reward-swatch-vote { background-color: var(--ls-cyan); }
+.reward-swatch-current { background-color: var(--ls-horizon); }
+.reward-swatch-next { background-color: var(--ls-coral); }
+
+/* Candle colours. Green for a rise and red for a fall is what a reader of a
+   price chart expects, so these are semantic and deliberately not the brand
+   accents -- though the fall borrows the coral, which already reads as the
+   warning colour here. */
+:root { --ls-up: #4CAF7D; --ls-down: #FF6B5B; }
+.market-chart { position: relative; width: 100%; height: 300px; }
+
+/* Wealth distribution bands on /richlist. Defined once, here, and read by both
+   the legend swatches and the doughnut -- the old page had one set of literals
+   in the table and another inside the chart call, which is how two things that
+   describe the same five categories drift apart.
+
+   An ordered ramp for ordered categories: the largest holders through to the
+   tail. */
+:root {
+  --ls-dist-1: #FF6B5B;
+  --ls-dist-2: #D58281;
+  --ls-dist-3: #AC99A7;
+  --ls-dist-4: #82B0CD;
+  --ls-dist-5: #58C7F3;
+}
+.richlist-swatch {
+  display: inline-block;
+  width: 20px; height: 20px;
+  margin-right: 6px;
+  border-radius: 3px;
+  vertical-align: middle;
+  float: left;
+}
+.richlist-swatch-1 { background-color: var(--ls-dist-1); }
+.richlist-swatch-2 { background-color: var(--ls-dist-2); }
+.richlist-swatch-3 { background-color: var(--ls-dist-3); }
+.richlist-swatch-4 { background-color: var(--ls-dist-4); }
+.richlist-swatch-5 { background-color: var(--ls-dist-5); }

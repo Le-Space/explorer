@@ -320,5 +320,11 @@
     "mining_col_blocks": "Blocks",
     "mining_col_share": "Share",
     "mining_rest": "others",
-    "mining_no_data": "No data for this period."
+    "mining_no_data": "No data for this period.",
+    "heavy_unavailable": "This page shows voting on the block reward. It belongs to the \"heavy\" extensions, which this chain does not run, so there is no data for it.",
+
+    // Candle tooltip on a market page; the rest of the mkt_* keys
+    // predate it.
+    "mkt_open": "Open",
+    "mkt_close": "Close"
 }
