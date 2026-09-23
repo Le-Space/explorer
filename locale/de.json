@@ -172,6 +172,7 @@
     "news_noc_text": "Names-On-Chain ist ein Workshop in fünf Lektionen: Namen direkt im Browser nachschlagen, registrieren und handeln, mit PSBTs, die in DoiWallet signiert werden. Jede Lektion ist eine kleine Anwendung, Quelltext inbegriffen.",
     "news_noc_open": "Zum Workshop",
     "news_noc_source": "Quelltext auf GitHub",
+    "footer_version_title": "Versionshinweise zu dieser Fassung",
     "footer_built_with": "Gebaut mit",
     "footer_upstream_title": "Dieser Explorer ist eine Abspaltung von Iquidus Explorer",
     "footer_blocks": "Blöcke",

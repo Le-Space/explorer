@@ -374,10 +374,14 @@ html(lang=lang)
           //- kept in source -- LICENSE carries it -- and forbids using the name
           //- to promote derived work. So the credit stays, quietly, and the
           //- "Powered by" that read as an endorsement does not.
-          a.footer-upstream(href='https://github.com/iquidus/explorer', target='_blank', rel='noopener', title=settings.locale.footer_upstream_title) Iquidus Explorer #{settings.iquidus_version}
+          a.footer-upstream(href='https://github.com/iquidus/explorer', target='_blank', rel='noopener', title=settings.locale.footer_upstream_title) Iquidus Explorer #{settings.upstream_version}
       .col-md-4.navbar-nav.footer-right
         //- Was `ui.nav` -- an element that does not exist, so the flex alignment
         //- it asked for never applied.
         .nav.justify-content-end
+          //- Which build this instance runs, beside what the chain is doing:
+          //- the same kind of question, so the same kind of chip. It links to
+          //- the release it was cut from.
+          a.badge.badge-pill.nav-link.footer-version(href='https://github.com/Le-Space/explorer/releases/tag/v' + settings.version, target='_blank', rel='noopener', title=settings.locale.footer_version_title)= 'v' + settings.version
           label#lblBlockcount.badge.badge-pill.nav-link
           label#lblConnections.badge.badge-pill.nav-link
