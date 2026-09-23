@@ -424,6 +424,43 @@ router.get('/qr/:string', function(req, res) {
   }
 });
 
+/**
+* Reads a whole-number query parameter within bounds.
+*
+* The bound is not politeness: these endpoints turn a number into a time range
+* and then into a database scan, so an unbounded `days` would walk the whole
+* collection on request. Anything missing or unreadable falls back to the
+* default rather than erroring -- a chart asking for nonsense should get the
+* ordinary view, not a broken page.
+*/
+function bounded(value, fallback, min, max) {
+  var n = parseInt(value, 10);
+  if (isNaN(n)) { return fallback; }
+  return Math.min(max, Math.max(min, n));
+}
+
+// Difficulty and hash rate over time. See db.get_mining_series for why this is
+// sampled by block rather than bucketed by hour.
+router.get('/ext/mining/series', function(req, res) {
+  db.get_mining_series(bounded(req.query.days, 7, 1, 90), function(data) {
+    res.send({data: data});
+  });
+});
+
+// Reward and fees per block.
+router.get('/ext/mining/rewards', function(req, res) {
+  db.get_mining_rewards(bounded(req.query.hours, 24, 1, 168), function(data) {
+    res.send({data: data});
+  });
+});
+
+// Blocks per coinbase address -- a payout destination, not an operator.
+router.get('/ext/mining/miners', function(req, res) {
+  db.get_mining_miners(bounded(req.query.hours, 24, 1, 168), function(data) {
+    res.send({data: data});
+  });
+});
+
 router.get('/ext/summary', function(req, res) {
   lib.get_difficulty(function(difficulty) {
     difficultyHybrid = ''
