@@ -123,3 +123,85 @@ hr { border-top-color: var(--ls-horizon); }
   font-size: 1.02rem;
   letter-spacing: -0.015em;
 }
+
+/* ---- Footer -------------------------------------------------------------
+   Three bands on one line: where the code lives, who built it, what the chain
+   is doing right now. The middle one carries the brand guide's credit variant
+   -- the first node drawn as a heart -- where mark and name link together as a
+   single signature, and the mark never falls below 22px, because below that
+   the heart stops reading as a heart. */
+.navbar.footer {
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  font-size: 0.82rem;
+}
+.navbar.footer > [class*="col-"] { padding-left: 0.5rem; padding-right: 0.5rem; }
+
+.footer-credit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.55rem;
+  width: 100%;
+  line-height: 1.2;
+}
+.footer-credit-lead { color: var(--ls-stardust); }
+.footer-credit-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ls-starlight);
+  font-weight: 500;
+  text-decoration: none;
+}
+.footer-credit-link:hover, .footer-credit-link:focus {
+  color: var(--ls-coral);
+  text-decoration: none;
+}
+/* 22px is the floor the brand guide sets for this mark, not a round number. */
+.footer-credit-mark { width: 22px; height: 22px; display: block; flex: none; }
+
+/* The fork's origin, kept but not advertised: a rule rather than a word
+   separates it, and it only gains contrast when someone reaches for it. */
+.footer-upstream {
+  color: #6E7A8F;
+  font-size: 0.72rem;
+  text-decoration: none;
+  padding-left: 0.55rem;
+  border-left: 1px solid var(--ls-horizon);
+}
+.footer-upstream:hover, .footer-upstream:focus { color: var(--ls-stardust); text-decoration: none; }
+
+/* One box per mark, whether it arrives as an icon font or as inline SVG, so
+   the two sit on the same baseline and answer the pointer the same way. */
+.footer .social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--ls-stardust);
+}
+.footer .social-link:hover, .footer .social-link:focus { color: var(--ls-cyan); }
+.footer .social-link .fa { font-size: 1.05rem; line-height: 1; }
+.social-svg { width: 0.95rem; height: 0.95rem; display: block; fill: currentColor; }
+
+/* Height and peer count are readings, so they take the label face and a quiet
+   outline instead of a filled pill shouting a status nobody set. */
+.footer-right .badge {
+  background-color: transparent;
+  border: 1px solid var(--ls-horizon);
+  color: var(--ls-stardust);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 400;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  margin-left: 0.35rem;
+}
+.footer-right .badge:empty { display: none; }
+
+@media (max-width: 767.98px) {
+  .footer-credit { justify-content: flex-start; }
+}

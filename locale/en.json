@@ -161,5 +161,9 @@
     "og_image_alt": "Doichain Explorer — names, blocks and transactions",
 
     // footer
-    "source_code": "Source code on GitHub"
+    "source_code": "Source code on GitHub",
+    "footer_built_with": "Built with",
+    "footer_upstream_title": "This explorer is a fork of Iquidus Explorer",
+    "footer_blocks": "blocks",
+    "footer_connections": "connections"
 }

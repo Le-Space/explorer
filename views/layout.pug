@@ -109,8 +109,8 @@ html(lang=lang)
             $("#hashrate").text(hashrateString);
             $("#lastPrice").text(parseFloat(json.data[0].lastPrice).toFixed(8) + ' #{settings.markets.exchange}'.toUpperCase());
             $("#marketCap").text((parseFloat(json.data[0].lastPrice).toFixed(8) * parseInt(parseFloat(json.data[0].supply).toFixed(0))).toLocaleString('en') + ' #{settings.markets.exchange}'.toUpperCase());
-            $("#lblConnections").text(json.data[0].connections + ' connections');
-            $("#lblBlockcount").text(json.data[0].blockcount + ' blocks');
+            $("#lblConnections").text(json.data[0].connections + ' #{settings.locale.footer_connections}');
+            $("#lblBlockcount").text(json.data[0].blockcount + ' #{settings.locale.footer_blocks}');
             $("#lblX1").text(' ');
           }});
         }
@@ -339,8 +339,14 @@ html(lang=lang)
                   span.glyphicon.fa.fa-github
             if settings.display.twitter
               li.pull-left
-                a#twitter-icon.nav-link.social-link(href="https://twitter.com/"+settings.twitter, target='_blank')
-                  span.glyphicon.fa.fa-twitter
+                //- x.com, not twitter.com: the old host only redirects, and a
+                //- redirect is a worse link than the right one.
+                a#twitter-icon.nav-link.social-link(href="https://x.com/"+settings.twitter, target='_blank', rel='noopener', title='X', aria-label='X')
+                  //- X's mark drawn inline. The Font Awesome loaded here is 4.3
+                  //- from 2015 and has only the bird; upgrading the whole icon
+                  //- set for one glyph would be a large change for a small reason.
+                  svg.social-svg(viewBox='0 0 512 512', role='img', aria-hidden='true', focusable='false')
+                    path(fill='currentColor', d='M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z')
             if settings.display.facebook
               li.pull-left
                 a#facebook-icon.nav-link.social-link(href="https://www.facebook.com/"+settings.facebook, target='_blank')
@@ -353,12 +359,24 @@ html(lang=lang)
               li.pull-left
                 a#youtube-icon.nav-link.social-link(href="https://www.youtube.com/channel/"+settings.youtube, target='_blank')
                   span.glyphicon.fa.fa-youtube
-      .col-md-4.navbar-nav
-        ul.nav.justify-content-center
-          li.text-center(style='margin-left:80px;margin-right:80px;')
-            p(style='')
-              a.nav-link.poweredby(href='https://github.com/iquidus/explorer', target='_blank') Powered by Iquidus Explorer v#{settings.iquidus_version}
-      .col-md-4.navbar-nav
-        ui.nav.justify-content-end
+      .col-md-4.navbar-nav.footer-middle
+        //- The brand guide's credit variant: the first node drawn as a heart,
+        //- mark and name linking together as one signature, 22px minimum. It
+        //- belongs here and not in the header -- there the plain mark is the
+        //- logo, and the heart is a gesture rather than a logo.
+        .footer-credit
+          span.footer-credit-lead=settings.locale.footer_built_with
+          a.footer-credit-link(href='https://le-space.de', target='_blank', rel='noopener')
+            img.footer-credit-mark(src='/images/le-space-mark-heart.svg', alt='', width='22', height='22')
+            span Le Space
+          //- The upstream this is forked from. Its BSD licence wants the notice
+          //- kept in source -- LICENSE carries it -- and forbids using the name
+          //- to promote derived work. So the credit stays, quietly, and the
+          //- "Powered by" that read as an endorsement does not.
+          a.footer-upstream(href='https://github.com/iquidus/explorer', target='_blank', rel='noopener', title=settings.locale.footer_upstream_title) Iquidus Explorer #{settings.iquidus_version}
+      .col-md-4.navbar-nav.footer-right
+        //- Was `ui.nav` -- an element that does not exist, so the flex alignment
+        //- it asked for never applied.
+        .nav.justify-content-end
           label#lblBlockcount.badge.badge-pill.nav-link
           label#lblConnections.badge.badge-pill.nav-link
