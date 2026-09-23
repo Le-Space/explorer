@@ -177,5 +177,113 @@
     "footer_built_with": "Built with",
     "footer_upstream_title": "This explorer is a fork of Iquidus Explorer",
     "footer_blocks": "blocks",
-    "footer_connections": "connections"
+    "footer_connections": "connections",
+
+    // Imprint and privacy notice.
+    //
+    // The privacy text describes what this explorer actually does -- measured,
+    // not taken from a generator. Anyone changing it should check the claim
+    // first: logs (nginx), the cookie (app.js), localStorage
+    // (public/javascripts/) and the response headers of the delivery.
+    //
+    // Paragraphs may carry a little HTML (a, strong, code); they come from
+    // this repository and never from user input.
+    "legal_imprint": "Imprint",
+    "legal_privacy": "Privacy",
+    "imprint_h_provider": "Information pursuant to Sect. 5 German Digital Services Act (DDG)",
+    "imprint_register": "Commercial register",
+    "imprint_register_court": "Registration court",
+    "imprint_represented": "Represented by",
+    "imprint_h_contact": "Contact",
+    "imprint_phone": "Phone",
+    "imprint_fax": "Fax",
+    "imprint_email": "E-mail",
+    "imprint_h_vat": "VAT ID",
+    "imprint_vat_text": "Sales tax identification number according to Sect. 27 a of the German Sales Tax Law:",
+    "imprint_h_editorial": "Person responsible for editorial content",
+    "imprint_h_dispute": "Dispute resolution before a consumer arbitration board",
+    "imprint_dispute_text": "We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board.",
+    "privacy_h_controller": "Controller",
+    "privacy_updated": "Last updated",
+    "privacy_sections": [
+            {
+                    "h": "The short version",
+                    "p": [
+                            "This explorer displays public data from the Doichain blockchain. It has no user accounts, asks for no sign-in, and embeds nothing from third parties: fonts, code libraries and icons are all served from our own server. We use no analytics or advertising services, no tracking pixels and no social media plugins. We set a cookie only if you explicitly switch the language.",
+                            "Whatever data does arise is described in full in the sections below — including what our delivery network sees and what ends up in the server logs."
+                    ]
+            },
+            {
+                    "h": "Delivery via Cloudflare",
+                    "p": [
+                            "This website is delivered through Cloudflare's content delivery network (Cloudflare Germany GmbH, Rosental 7, 80331 Munich, Germany; parent company Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA). Cloudflare sits in front of our server: the encryption of your connection terminates there. In doing so, Cloudflare processes your IP address, the address you requested and details about your browser in order to deliver the page and to fend off attacks.",
+                            "The legal basis is our legitimate interest in an available service protected against overload and attack (Art. 6(1)(f) GDPR). A data processing agreement is in place with Cloudflare; transfers to the USA are covered by the European Commission's standard contractual clauses, and Cloudflare, Inc. is certified under the EU-US Data Privacy Framework. Details are in <a href=\"https://www.cloudflare.com/privacypolicy/\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare's privacy policy</a>."
+                    ]
+            },
+            {
+                    "h": "Server logs",
+                    "p": [
+                            "For every request, our server writes one line to a log file: the time, the address requested, the HTTP status, the number of bytes transferred, the referring page and the browser identification.",
+                            "The IP address recorded there is <strong>not yours</strong>. It is the address of the Cloudflare machine that passed the request on to us. Our server is reachable only through Cloudflare, and we run nothing that restores your original address — so your IP address is not available to us.",
+                            "The purpose is running the website and diagnosing faults (Art. 6(1)(f) GDPR). The logs are rotated daily and deleted after 14 days."
+                    ]
+            },
+            {
+                    "h": "Network error reports",
+                    "p": [
+                            "Through the <code>NEL</code> header, Cloudflare asks your browser to report <strong>failed</strong> connections to <code>a.nel.cloudflare.com</code>; successful requests are explicitly not reported (<code>success_fraction: 0</code>). Such a report contains the address affected, the kind of error and your IP address. We neither retrieve nor evaluate these reports; they arise from the Cloudflare configuration. Most browsers allow the feature to be switched off."
+                    ]
+            },
+            {
+                    "h": "Cookie for the language choice",
+                    "p": [
+                            "If you switch the language, we store that decision in a cookie named <code>lang</code> (lifetime one year, <code>SameSite=Lax</code>). It holds nothing but the language code, for example <code>en</code>. As long as you do not switch, no cookie is set; which language you see first is then decided solely by the language preference your browser sends, which we do not store.",
+                            "The cookie is necessary for the presentation you asked for and therefore requires no consent (Sect. 25(2) no. 2 German TDDDG); the processing rests on Art. 6(1)(f) GDPR. You can delete it in your browser at any time."
+                    ]
+            },
+            {
+                    "h": "Local storage in your browser",
+                    "p": [
+                            "If you dismiss the news notice or the tip next to the search field, your browser remembers that under <code>news-dismissed:…</code> and <code>hint-dismissed:…</code> in localStorage, so the notice does not return on every visit. These values never leave your device and never reach our server. You can delete them through your browser's site data."
+                    ]
+            },
+            {
+                    "h": "No third-party content",
+                    "p": [
+                            "All fonts, code libraries and icons are hosted on our own server. When you open these pages your browser therefore opens no connection to Google Fonts, to an external CDN or to an analytics service. We measured this: on the home, block, transaction and name pages, not a single request went to an external domain."
+                    ]
+            },
+            {
+                    "h": "What you search for and open",
+                    "p": [
+                            "What you type into the search field is sent as a POST request. The search term therefore appears neither in the address bar nor in our logs. The result page you are then taken to does, however, carry the value found in its address — for example <code>/address/…</code>, <code>/tx/…</code> or <code>/name/…</code>. That address appears in the log line described above and is deleted there after 14 days; it is associated with Cloudflare's IP address, not with yours.",
+                            "Blockchain addresses and names can, in individual cases, allow conclusions about people. If you wish to avoid even that, you can reach the explorer through a service that hides where you come from, or run your own instance — the source code is open."
+                    ]
+            },
+            {
+                    "h": "Data from the blockchain",
+                    "p": [
+                            "Blocks, transactions, addresses and names come from the public Doichain blockchain. We merely display them; they are created by the participants of the network. We can neither change nor delete entries in the blockchain, because it is held by the network's nodes worldwide. A request for erasure directed at us can therefore only concern our own presentation, not the blockchain itself."
+                    ]
+            },
+            {
+                    "h": "Contact by e-mail",
+                    "p": [
+                            "If you write to us, we process your details in order to answer your enquiry (Art. 6(1)(b) or (f) GDPR) and delete them once they are no longer needed for that purpose and no statutory retention duties apply."
+                    ]
+            },
+            {
+                    "h": "External links",
+                    "p": [
+                            "Links to GitHub, to the Names-On-Chain workshop and to le-space.de are plain references — nothing from those sites is embedded in our pages. From the moment you click, the privacy policy of the respective provider applies."
+                    ]
+            },
+            {
+                    "h": "Your rights",
+                    "p": [
+                            "You have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18), data portability (Art. 20) and the right to object to processing based on legitimate interests (Art. 21). You may also lodge a complaint with a data protection supervisory authority (Art. 77 GDPR), for instance the one where you live.",
+                            "Because we do not collect your IP address and keep no user accounts, we cannot identify individual visitors. In response to a request for access we will therefore, as a rule, only be able to tell you that we hold no data about you (Art. 11 GDPR)."
+                    ]
+            }
+    ]
 }

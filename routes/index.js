@@ -146,6 +146,32 @@ router.get('/info', function(req, res) {
   res.render('info', { active: 'info', address: settings.address, hashes: settings.api });
 });
 
+/**
+* Imprint and privacy notice.
+*
+* Served only while an operator is configured. An instance that has not filled
+* in settings.legal would otherwise publish an empty imprint, which is worse
+* than publishing none -- so it answers 404 and the footer hides the links.
+*
+* `title` is both the card heading and, via pageTitle, the document title; the
+* view picks its structure from `doc`.
+*/
+function render_legal(res, doc) {
+  if (!settings.legal || !settings.legal.company) {
+    return res.status(404).render('error', { active: '', error: '404', message: 'Not found' });
+  }
+  var heading = doc === 'imprint' ? L(res).legal_imprint : L(res).legal_privacy;
+  res.render('legal', { active: 'legal', doc: doc, title: heading, pageTitle: heading });
+}
+
+router.get('/imprint', function(req, res) {
+  render_legal(res, 'imprint');
+});
+
+router.get('/privacy', function(req, res) {
+  render_legal(res, 'privacy');
+});
+
 router.get('/markets/:market', function(req, res) {
   var market = req.params['market'];
   if (settings.markets.enabled.indexOf(market) != -1) {

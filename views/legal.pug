@@ -1,0 +1,110 @@
+extends layout
+
+//- Impressum and privacy notice.
+//-
+//- One view for both, because they share a shape: a card of headed sections.
+//- What differs is where the words come from. The imprint interleaves the
+//- operator's details (settings.legal, instance configuration) with headings
+//- from the locale, so its structure is spelled out here. The privacy notice
+//- is prose only, so it is a loop over settings.locale.privacy_sections and a
+//- new language needs no change to this file.
+//-
+//- Sections are numbered here rather than in the locale files: a number typed
+//- into a translation is a number that goes stale when a section is inserted.
+
+block content
+  .col-md-12(style="margin-bottom: 4%")
+    .card.card-default
+      .card-header
+        strong= title
+      .card-body.legal-body
+        if doc === 'imprint'
+          h2= settings.locale.imprint_h_provider
+          p
+            = settings.legal.company
+            if settings.legal.street
+              br
+              = settings.legal.street
+            if settings.legal.city
+              br
+              = settings.legal.city
+          if settings.legal.register || settings.legal.register_court
+            p
+              if settings.legal.register
+                = settings.locale.imprint_register + ': ' + settings.legal.register
+              if settings.legal.register && settings.legal.register_court
+                br
+              if settings.legal.register_court
+                = settings.locale.imprint_register_court + ': ' + settings.legal.register_court
+          if settings.legal.representative
+            p
+              strong= settings.locale.imprint_represented
+              br
+              = settings.legal.representative
+
+          h2= settings.locale.imprint_h_contact
+          p
+            if settings.legal.phone
+              = settings.locale.imprint_phone + ': ' + settings.legal.phone
+              br
+            if settings.legal.fax
+              = settings.locale.imprint_fax + ': ' + settings.legal.fax
+              br
+            if settings.legal.email
+              = settings.locale.imprint_email + ': '
+              a(href='mailto:' + settings.legal.email)= settings.legal.email
+
+          if settings.legal.vat_id
+            h2= settings.locale.imprint_h_vat
+            p
+              = settings.locale.imprint_vat_text
+              br
+              = settings.legal.vat_id
+
+          if settings.legal.representative
+            h2= settings.locale.imprint_h_editorial
+            p
+              = settings.legal.representative
+              if settings.legal.street
+                br
+                = settings.legal.street
+              if settings.legal.city
+                br
+                = settings.legal.city
+
+          h2= settings.locale.imprint_h_dispute
+          p= settings.locale.imprint_dispute_text
+
+        else
+          //- Where data-protection requests go. Both mailboxes exist; the page
+          //- names the one that matches the language it is written in, and
+          //- falls back to the general address if a fork configured only that.
+          - var pmail = (lang === 'de' ? settings.legal.privacy_email : settings.legal.privacy_email_en) || settings.legal.email
+
+          h2 1. #{settings.locale.privacy_h_controller}
+          p
+            = settings.legal.company
+            if settings.legal.street
+              br
+              = settings.legal.street
+            if settings.legal.city
+              br
+              = settings.legal.city
+          p
+            if settings.legal.phone
+              = settings.locale.imprint_phone + ': ' + settings.legal.phone
+              br
+            if pmail
+              = settings.locale.imprint_email + ': '
+              a(href='mailto:' + pmail)= pmail
+
+          each section, i in settings.locale.privacy_sections
+            h2 #{i + 2}. #{section.h}
+            each para in section.p
+              //- Unescaped on purpose: these paragraphs carry a little markup
+              //- (a, strong, code). They are repository content written by us,
+              //- never user input -- see the note in locale/<code>.json.
+              p!= para
+
+          if settings.legal.updated
+            p.legal-updated #{settings.locale.privacy_updated}: #{settings.legal.updated}

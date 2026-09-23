@@ -161,6 +161,35 @@
   "googleplus": "yourgooglepluspage",
   "youtube": "youryoutubechannel",
 
+  // Impressum and privacy notice, reachable from the footer.
+  //
+  // These are the operator's own details and a legal statement about this
+  // instance -- a fork MUST replace them with its own before publishing, or
+  // it publishes somebody else's imprint. The footer shows both pages only
+  // while "company" is set, so an unconfigured instance links to nothing.
+  //
+  // The wording of the two pages lives in locale/<code>.json; only the
+  // party and the date are configured here.
+  "legal": {
+    "company": "Le Space UG (haftungsbeschr\u00e4nkt)",
+    "street": "Lichtenberg 44",
+    "city": "84307 Eggenfelden",
+    "representative": "Nico Krause",
+    "register": "HRB 25885",
+    "register_court": "Amtsgericht Leipzig",
+    "vat_id": "DE270240660",
+    "phone": "+49 / 87 21 / 5 06 49 96",
+    "fax": "+49 / 87 21 / 5 06 49 94",
+    "email": "info@le-space.de",
+    // Where data-protection requests go. The German and English pages name
+    // their own address, because both mailboxes exist.
+    "privacy_email": "datenschutz@le-space.de",
+    "privacy_email_en": "privacy@le-space.de",
+    // Shown as "last updated" at the foot of the privacy notice.
+    "updated": "2026-09"
+  },
+
+
   //genesis
   "genesis_tx": "65f705d2f385dc85763a317b3ec000063003d6b039546af5d8195a5ec27ae410",
   "genesis_block": "b2926a56ca64e0cd2430347e383f63ad7092f406088b9b86d6d68c2a34baef51",

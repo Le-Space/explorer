@@ -4,7 +4,9 @@ doctype html
 //- and it tells screen readers and search engines which language this is.
 html(lang=lang)
   head
-    title= settings.title
+    //- A page may put its own name in front of the site's; the legal pages do.
+    //- Everything that passes no pageTitle keeps the plain site title.
+    title= (typeof pageTitle !== 'undefined' && pageTitle) ? (pageTitle + ' \u2014 ' + settings.title) : settings.title
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     //- Brand icons and fonts (docs/le-space-brand in Le-Space/landing).
@@ -346,7 +348,8 @@ html(lang=lang)
     block content
     div(class=footerClasses, role='navigation')
       .col-md-4.navbar-nav
-        if settings.repo_url || settings.display.twitter || settings.display.facebook || settings.display.googleplus || settings.display.youtube
+        - var hasLegal = settings.legal && settings.legal.company
+        if settings.repo_url || settings.display.twitter || settings.display.facebook || settings.display.googleplus || settings.display.youtube || hasLegal
           ul.nav.justify-content-left
             //- Where this explorer comes from. An explorer asks to be trusted with
             //- what it says about the chain, so it should say where its own code is.
@@ -376,6 +379,16 @@ html(lang=lang)
               li.pull-left
                 a#youtube-icon.nav-link.social-link(href="https://www.youtube.com/channel/"+settings.youtube, target='_blank')
                   span.glyphicon.fa.fa-youtube
+            //- Imprint and privacy notice. German law wants both reachable
+            //- from every page, so they belong in the footer and not in a
+            //- menu. They share the row with the icons to keep the fixed bar
+            //- one line tall, and they stay away entirely while no operator
+            //- is configured -- an empty imprint is worse than none.
+            if hasLegal
+              li.pull-left
+                a.nav-link.footer-legal(href='/imprint')= settings.locale.legal_imprint
+              li.pull-left
+                a.nav-link.footer-legal(href='/privacy')= settings.locale.legal_privacy
       .col-md-4.navbar-nav.footer-middle
         //- The brand guide's credit variant: the first node drawn as a heart,
         //- mark and name linking together as one signature, 22px minimum. It
