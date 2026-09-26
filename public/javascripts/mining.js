@@ -1,5 +1,5 @@
 /**
-* The three charts on /mining.
+* The charts on /mining.
 *
 * Everything a reader needs is already in the HTML when this runs; these only
 * add the shape of it over time. So every failure here is silent in the sense
@@ -29,6 +29,11 @@
   var TEXT = css('--ls-stardust', '#A8B3C7');
   var GRID = css('--ls-horizon', '#232B3D');
 
+  // Units for rate(). Up here with the other constants because the window
+  // charts draw while this script is still being run, before the lines further
+  // down have assigned anything.
+  var SI = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
+
   Chart.defaults.color = TEXT;
   Chart.defaults.font.family = 'Inter, -apple-system, "Segoe UI", Roboto, sans-serif';
   Chart.defaults.maintainAspectRatio = false;
@@ -50,13 +55,17 @@
     return datePart(unix) + ' ' + timePart(unix);
   }
 
+  // `canvas` may be one canvas or several fed by the same request, in which
+  // case each of them says so.
   function say(canvas, message) {
-    var box = canvas && canvas.parentNode;
-    if (!box) { return; }
-    var p = document.createElement('p');
-    p.className = 'mining-note mining-empty';
-    p.textContent = message;
-    box.replaceChild(p, canvas);
+    [].concat(canvas).forEach(function (c) {
+      var box = c && c.parentNode;
+      if (!box) { return; }
+      var p = document.createElement('p');
+      p.className = 'mining-note mining-empty';
+      p.textContent = message;
+      box.replaceChild(p, c);
+    });
   }
 
   function load(url, onData, canvas) {
@@ -101,6 +110,148 @@
         }
       }
     };
+  }
+
+  // ---- block time and hash rate by window --------------------------------
+  // One bar per window, from the last hour to the last year, all ending now.
+  // Both value axes are logarithmic: between a quiet stretch and a busy one
+  // the averages differ tenfold, and on a linear axis the recent windows would
+  // sit flat on the floor. A bar resting on fewer than FEW blocks is drawn
+  // lighter, since an hour holds a handful and a reader should see how little
+  // stands behind it. A window without history, or without a single block,
+  // gets no bar. The tooltip and the table say which of the two it is.
+  //
+  // The rows come with the page (window.MINING_WINDOWS), the very snapshot the
+  // table was rendered from. The request is only the fallback for a page that
+  // arrived without them.
+  var winTimeCanvas = document.getElementById('chart-windows-blocktime');
+  var winRateCanvas = document.getElementById('chart-windows-hashrate');
+  var winCanvases = [winTimeCanvas, winRateCanvas].filter(Boolean);
+  function drawWindows(rows) {
+    if (!rows.some(function (r) { return r.blocks > 0; })) {
+      return say(winCanvases, T.noHistory || T.noData || 'No data.');
+    }
+    var FEW = 6;
+    var labels = rows.map(function (r) { return (T.windowLabels && T.windowLabels[r.window]) || r.window; });
+    function colours(colour) {
+      return rows.map(function (r) { return fade(colour, r.blocks < FEW ? 0.25 : 0.6); });
+    }
+    function status(i) {
+      var r = rows[i];
+      if (!r.history) { return T.noHistory || 'not enough history'; }
+      if (!r.blocks) { return T.noBlock || 'no block'; }
+      return (T.blocks || 'Blocks') + ': ' + Number(r.blocks).toLocaleString(LOCALE);
+    }
+    // Axis ticks round to whole minutes from ten upwards, tooltips keep one
+    // decimal, as the table does.
+    function minutesTick(v) {
+      return Number(v).toLocaleString(LOCALE, {maximumFractionDigits: v < 10 ? 1 : 0}) + ' min';
+    }
+    function minutesExact(v) {
+      return Number(v).toLocaleString(LOCALE, {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' min';
+    }
+    // A logarithmic axis draws a gridline at every 1..9 of each decade, and
+    // labelled at all of them the ticks around 6, 8 and 10 run into each
+    // other. Only 1, 2 and 5 of each decade are labelled, the lines stay.
+    function roundTick(v, format) {
+      var decade = Math.pow(10, Math.floor(Math.log10(v)));
+      var lead = Math.round(v / decade);
+      return (lead === 1 || lead === 2 || lead === 5) && Math.abs(v - lead * decade) < decade * 1e-6 ? format(v) : '';
+    }
+    // The labelled ticks are 1, 2 and 5 of a unit, so they need no decimals.
+    // With them "5,00 PH/s" would stand under "10 PH/s".
+    function whole(v) { return rate(v, 0); }
+    // The legend takes its swatch from the first bar, which is often a light
+    // one. It should show the colour a normal bar has.
+    function legendOf(colour) {
+      return {labels: {boxWidth: 12, usePointStyle: true, generateLabels: function (chart) {
+        var items = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+        if (items.length) { items[0].fillStyle = fade(colour, 0.6); }
+        return items;
+      }}};
+    }
+    // Only a bar that has a value gets its block count under the label. For an
+    // empty one the label already says why it is empty.
+    function countUnder(items) {
+      var it = items[0];
+      return it && it.parsed.y != null ? status(it.dataIndex) : '';
+    }
+
+    if (winTimeCanvas) {
+      var target = T.targetMinutes || 10;
+      new Chart(winTimeCanvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: T.avgBlockTime || 'Average block time',
+              data: rows.map(function (r) { return r.avg_block_time == null ? null : r.avg_block_time / 60; }),
+              backgroundColor: colours(CYAN), borderColor: CYAN, borderWidth: 1
+            },
+            {
+              type: 'line',
+              label: (T.target || 'Target') + ' ' + minutesTick(target),
+              data: rows.map(function () { return target; }),
+              borderColor: CORAL, borderDash: [6, 4], borderWidth: 1.5,
+              pointRadius: 0, pointHoverRadius: 0, pointStyle: 'line', fill: false
+            }
+          ]
+        },
+        options: {
+          interaction: {mode: 'index', intersect: false},
+          scales: {
+            x: {grid: {display: false}, ticks: {maxRotation: narrow ? 50 : 0, autoSkip: false}},
+            y: {type: 'logarithmic', grid: grid, ticks: {autoSkip: false, callback: function (v) { return roundTick(v, minutesTick); }}}
+          },
+          plugins: {
+            legend: legendOf(CYAN),
+            tooltip: {
+              filter: function (it) { return it.datasetIndex === 0; },
+              callbacks: {
+                label: function (c) { return c.parsed.y == null ? status(c.dataIndex) : c.dataset.label + ': ' + minutesExact(c.parsed.y); },
+                afterBody: countUnder
+              }
+            }
+          }
+        }
+      });
+    }
+
+    if (winRateCanvas) {
+      new Chart(winRateCanvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: T.hashrate || 'Hash rate',
+            data: rows.map(function (r) { return r.hashrate; }),
+            backgroundColor: colours(CORAL), borderColor: CORAL, borderWidth: 1
+          }]
+        },
+        options: {
+          interaction: {mode: 'index', intersect: false},
+          scales: {
+            x: {grid: {display: false}, ticks: {maxRotation: narrow ? 50 : 0, autoSkip: false}},
+            y: {type: 'logarithmic', grid: grid, ticks: {autoSkip: false, callback: function (v) { return roundTick(v, whole); }}}
+          },
+          plugins: {
+            legend: {display: false},
+            tooltip: {callbacks: {
+              label: function (c) { return c.parsed.y == null ? status(c.dataIndex) : c.dataset.label + ': ' + rate(c.parsed.y, 2); },
+              afterBody: countUnder
+            }}
+          }
+        }
+      });
+    }
+  }
+  if (winCanvases.length) {
+    if (window.MINING_WINDOWS && window.MINING_WINDOWS.length) {
+      try { drawWindows(window.MINING_WINDOWS); } catch (e) { say(winCanvases, T.noData || 'No data.'); }
+    } else {
+      load('/ext/mining/windows', drawWindows, winCanvases);
+    }
   }
 
   // ---- hash rate and difficulty over time -------------------------------
@@ -229,12 +380,15 @@
     }, minCanvas);
   }
 
-  var SI = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
-  function rate(h) {
+  // `digits` fixes the decimals, as a tooltip wants. Without it the axis
+  // style applies, two below ten and none above. Formatted for the page's
+  // language, like every other number on it.
+  function rate(h, digits) {
     var i = 0;
     h = h || 0;
     while (h >= 1000 && i < SI.length - 1) { h /= 1000; i++; }
-    return h.toFixed(h < 10 ? 2 : 0) + ' ' + SI[i];
+    var d = digits == null ? (h < 10 ? 2 : 0) : digits;
+    return h.toLocaleString(LOCALE, {minimumFractionDigits: d, maximumFractionDigits: d}) + ' ' + SI[i];
   }
   function compact(n) {
     try { return Number(n).toLocaleString(LOCALE, {notation: 'compact', maximumFractionDigits: 1}); }

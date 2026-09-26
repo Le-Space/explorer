@@ -291,4 +291,125 @@ describe('explorer', function() {
       ])).toEqual(0);
     });
   });
+
+  describe('block_windows', function() {
+
+    // Ten blocks, one every 100 seconds, each adding 0x100 = 256 units of
+    // work. The last one was found at 1900, and `now` is 2000, a hundred seconds
+    // into a gap that is still open.
+    var blocks = [];
+    for (var h = 1; h <= 10; h++) {
+      blocks.push({height: h, time: 1000 + (h - 1) * 100, chainwork: (h * 256).toString(16)});
+    }
+    var NOW = 2000;
+    function copy(rows) {
+      return rows.map(function(b) { return {height: b.height, time: b.time, chainwork: b.chainwork}; });
+    }
+    function one(seconds, rows, now) {
+      return lib.block_windows(rows || blocks, now || NOW, [{key: 'w', seconds: seconds}])[0];
+    }
+
+    it('should count the blocks whose own time falls in the window', function() {
+      // Since 1500: the blocks at 1500, 1600, 1700, 1800, 1900.
+      var w = one(500);
+      expect(w.history).toBe(true);
+      expect(w.blocks).toEqual(5);
+      expect(w.from_height).toEqual(6);
+      expect(w.to_height).toEqual(10);
+    });
+
+    it('should divide the window by the blocks found in it', function() {
+      expect(one(500).avg_block_time).toEqual(100);
+      expect(one(300).avg_block_time).toEqual(100);
+      // One block since 1880, in a two-minute window.
+      expect(one(120).avg_block_time).toEqual(120);
+    });
+
+    it('should measure up to now, so a gap that is still open raises the average', function() {
+      // At 2300 the last block is 400 seconds old. Since 1800 there are the
+      // blocks at 1800 and 1900: 500 / 2 = 250. Measured to the last block
+      // instead, it would read the 100-second spacing.
+      var w = one(500, blocks, 2300);
+      expect(w.blocks).toEqual(2);
+      expect(w.avg_block_time).toEqual(250);
+    });
+
+    it('should answer null, not infinity, for a window with no block', function() {
+      // Nothing since 1950: the last block is fifty seconds too old.
+      var w = one(50);
+      expect(w.history).toBe(true);
+      expect(w.blocks).toEqual(0);
+      expect(w.avg_block_time).toBeNull();
+      expect(w.hashrate).toBeNull();
+      expect(w.from_height).toBeNull();
+    });
+
+    it('should take the hash rate from the block before the window to the tip', function() {
+      // Block 5, the one before the window since 1500, is moved to 1350 so
+      // that leaving it out would show: with it the work of blocks 6 to 10 is
+      // 1280 over 1900 - 1350 = 550 seconds, without it 1024 over 400.
+      var rows = copy(blocks);
+      rows[4].time = 1350;
+      var w = one(500, rows);
+      expect(w.hashrate).toBeCloseTo(1280 / 550, 9);
+      expect(w.hashrate).toEqual(lib.hashrate_from_blocks(rows.slice(4)));
+    });
+
+    it('should decide membership by time, not by height order', function() {
+      // Block 8 claims 1550, a second before block 7 at 1600. With the
+      // boundary at 1580, block 7 is in and block 8 is out although it is
+      // higher. Counting from the first block past the boundary would have
+      // taken both.
+      var rows = copy(blocks);
+      rows[7].time = 1550;
+      var w = one(420, rows);
+      expect(w.blocks).toEqual(3);
+      expect(w.from_height).toEqual(7);
+      expect(w.to_height).toEqual(10);
+    });
+
+    it('should count a block stamped later than now', function() {
+      // The node accepts timestamps up to two hours ahead. The newest block
+      // exists, so it belongs to the last hour even if its clock ran fast.
+      var rows = copy(blocks);
+      rows[9].time = NOW + 60;
+      var w = one(120, rows);
+      expect(w.blocks).toEqual(1);
+      expect(w.to_height).toEqual(10);
+    });
+
+    it('should report missing history instead of averaging over the part it has', function() {
+      // The rows start at 1000. A window since 900 reaches past them, and one
+      // since exactly 1000 has no block before it to take the work from.
+      [1100, 1000].forEach(function(seconds) {
+        var w = one(seconds);
+        expect(w.history).toBe(false);
+        expect(w.blocks).toEqual(0);
+        expect(w.avg_block_time).toBeNull();
+        expect(w.hashrate).toBeNull();
+      });
+      expect(lib.block_windows([], NOW, [{key: 'w', seconds: 60}])[0].history).toBe(false);
+    });
+
+    it('should treat a hole in the heights as missing history, but only where it lies', function() {
+      // Block 7 is missing, as after an interrupted backfill. The window since
+      // 1500 spans the hole and would count four blocks instead of five, so it
+      // answers no history instead. The window since 1850 lies after the hole
+      // and is unaffected.
+      var rows = copy(blocks).filter(function(b) { return b.height !== 7; });
+      var across = one(500, rows);
+      expect(across.history).toBe(false);
+      expect(across.avg_block_time).toBeNull();
+      var after = one(150, rows);
+      expect(after.history).toBe(true);
+      expect(after.blocks).toEqual(1);
+    });
+
+    it('should answer every window in the order given, with its key and length', function() {
+      var out = lib.block_windows(blocks, NOW, [{key: 'short', seconds: 120}, {key: 'long', seconds: 900}]);
+      expect(out.map(function(w) { return w.window; })).toEqual(['short', 'long']);
+      expect(out.map(function(w) { return w.seconds; })).toEqual([120, 900]);
+      expect(out[1].blocks).toEqual(9);
+    });
+  });
 });
