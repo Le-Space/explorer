@@ -2,10 +2,12 @@ extends layout
 
 //- The mining page.
 //-
-//- The figures and the table are rendered here rather than fetched, so the
-//- page carries its answer before any script runs. Only the three charts are
-//- filled in afterwards, from /ext/mining/*; if that never happens, what is
-//- left is still a page about mining rather than three empty boxes.
+//- The figures and the tables are rendered here rather than fetched, so the
+//- page carries its answer before any script runs. Only the charts are filled
+//- in afterwards. If that never happens, what is left is still a page about
+//- mining rather than a row of empty boxes. The window table is the no-script
+//- counterpart of the two window charts, and the charts draw from the very
+//- snapshot the table was rendered from.
 //-
 //- The notes under the charts are content, not decoration. The hash rate is
 //- derived rather than measured, and the miners chart counts addresses rather
@@ -17,8 +19,8 @@ block content
   //- amounts of the same thing.
   - var doi = function (sat) { var s = ((sat || 0) / 1e8).toFixed(8).replace(/(\.\d\d)(\d*?)0+$/, '$1$2'); return s; }
   - var SI = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s']
-  - var rate = function (h) { var i = 0; h = h || 0; while (h >= 1000 && i < SI.length - 1) { h /= 1000; i++; } return h.toFixed(2) + ' ' + SI[i]; }
   - var LOCALE = lang === 'de' ? 'de-DE' : 'en-GB'
+  - var rate = function (h) { var i = 0; h = h || 0; while (h >= 1000 && i < SI.length - 1) { h /= 1000; i++; } return h.toLocaleString(LOCALE, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ' + SI[i]; }
   - var big = function (n) { return (n || 0).toLocaleString(LOCALE, {maximumFractionDigits: 2}); }
   //- Difficulty runs to nine figures and wraps a tile onto two lines, where
   //- the exact digits say nothing a reader wants at a glance -- the chart
@@ -27,6 +29,8 @@ block content
   //- has none.
   - var compact = function (n) { try { return (n || 0).toLocaleString(LOCALE, {notation: 'compact', maximumFractionDigits: 2}); } catch (e) { return big(n); } }
   - var when = function (t) { return new Date((t || 0) * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' UTC'; }
+  - var minutes = function (s) { return (s / 60).toLocaleString(LOCALE, {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' min'; }
+  - var windowLabel = function (key) { return settings.locale['mining_window_' + key] || key; }
 
   .col-md-12(style="margin-bottom: 4%")
     if empty
@@ -71,6 +75,52 @@ block content
 
       noscript
         .alert.alert-secondary.mining-noscript #{settings.locale.mining_charts_need_js}
+
+      //- How fast the chain is now, against the last day, month and year: one
+      //- bar per window, all ending now. The table beneath carries the same
+      //- numbers, so the page answers the question without JavaScript too.
+      .row
+        .col-md-6
+          .card.card-default.mining-card
+            .card-header
+              strong #{settings.locale.mining_chart_windows_blocktime}
+            .card-body
+              .mining-canvas
+                canvas#chart-windows-blocktime(role='img', aria-label=settings.locale.mining_chart_windows_blocktime)
+        .col-md-6
+          .card.card-default.mining-card
+            .card-header
+              strong #{settings.locale.mining_chart_windows_hashrate}
+            .card-body
+              .mining-canvas
+                canvas#chart-windows-hashrate(role='img', aria-label=settings.locale.mining_chart_windows_hashrate)
+
+      .card.card-default.mining-card
+        .card-header
+          strong #{settings.locale.mining_table_windows}
+        .card-body.table-responsive
+          table.table.table-sm.mining-table.mining-windows
+            thead
+              tr
+                th(scope='col') #{settings.locale.mining_col_window}
+                th.text-right(scope='col') #{settings.locale.mining_col_blocks}
+                th.text-right(scope='col') #{settings.locale.mining_col_avg_blocktime}
+                th.text-right(scope='col') #{settings.locale.mining_tile_hashrate}
+            tbody
+              if !windows.length
+                tr
+                  td(colspan=4) #{settings.locale.mining_no_data}
+              each w in windows
+                tr
+                  th(scope='row')= windowLabel(w.window)
+                  if !w.history
+                    td.text-right.mining-time(colspan=3) #{settings.locale.mining_windows_no_history}
+                  else
+                    td.text-right= big(w.blocks)
+                    td.text-right= w.avg_block_time == null ? settings.locale.mining_windows_no_block : minutes(w.avg_block_time)
+                    td.text-right= w.hashrate == null ? '—' : rate(w.hashrate)
+          p.mining-note!= settings.locale.mining_windows_note
+          p.mining-note!= settings.locale.mining_windows_fork_note
 
       .card.card-default.mining-card
         .card-header
@@ -119,7 +169,7 @@ block content
                   td
                     a(href='/block/' + b.hash)= b.height
                   td.mining-time= when(b.time)
-                  td
+                  td.mining-address
                     if b.winner
                       a(href='/address/' + b.winner)= b.winner
                     else
@@ -140,10 +190,20 @@ block content
           blocks: settings.locale.mining_col_blocks,
           rest: settings.locale.mining_rest,
           noData: settings.locale.mining_no_data,
+          avgBlockTime: settings.locale.mining_col_avg_blocktime,
+          target: settings.locale.mining_target,
+          targetMinutes: (settings.blocktime || 600) / 60,
+          noHistory: settings.locale.mining_windows_no_history,
+          noBlock: settings.locale.mining_windows_no_block,
+          windowLabels: windows.reduce(function (m, w) { m[w.window] = windowLabel(w.window); return m; }, {}),
           locale: lang === 'de' ? 'de-DE' : 'en-GB',
           symbol: settings.symbol
         };
+      //- The window charts draw from the snapshot the table above was rendered
+      //- from, so the two can never disagree. `<` is escaped because this is
+      //- inlined into a script element.
       script
         != 'window.MINING_I18N = ' + JSON.stringify(miningI18n) + ';'
+        != 'window.MINING_WINDOWS = ' + JSON.stringify(windows).replace(/</g, '\\u003c') + ';'
       script(src='/vendor/chartjs/chart.umd-4.5.1.min.js')
       script(src='/javascripts/mining.js?v=' + settings.asset_version)

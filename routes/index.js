@@ -242,15 +242,23 @@ router.get('/movement', function(req, res) {
 * db.get_mining_page.
 */
 router.get('/mining', function(req, res) {
-  db.get_mining_page(function(page) {
+  // The window table is rendered here as well, for the same reason as the
+  // tiles: the numbers are in the page before any chart script runs. The two
+  // lookups do not depend on each other, so they run side by side.
+  var page = null, windows = null;
+  function done() {
+    if (page === null || windows === null) { return; }
     res.render('mining', {
       active: 'mining',
       empty: page.empty,
       tiles: page.tiles,
       recent: page.recent,
+      windows: windows,
       pageTitle: L(res).mining_title
     });
-  });
+  }
+  db.get_mining_page(function(p) { page = p; done(); });
+  db.get_mining_windows(function(w) { windows = w || []; done(); });
 });
 
 router.get('/network', function(req, res) {
@@ -485,6 +493,14 @@ router.get('/ext/mining/series', function(req, res) {
 // Reward and fees per block.
 router.get('/ext/mining/rewards', function(req, res) {
   db.get_mining_rewards(bounded(req.query.hours, 24, 1, 168), function(data) {
+    res.send({data: data});
+  });
+});
+
+// Average block time and hash rate over eleven windows ending now, one hour
+// to one year. No parameters: the windows are fixed, see db.get_mining_windows.
+router.get('/ext/mining/windows', function(req, res) {
+  db.get_mining_windows(function(data) {
     res.send({data: data});
   });
 });
