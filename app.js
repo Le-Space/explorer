@@ -337,6 +337,10 @@ app.set('txcount', settings.txcount);
 app.set('txcount_per_page', settings.txcount_per_page);
 app.set('nethash', settings.nethash);
 app.set('nethash_units', settings.nethash_units);
+// The target spacing the mining page draws its dashed line at. Without
+// this line the template reads undefined and falls back to ten minutes,
+// so a chain configured otherwise would be measured against the wrong mark.
+app.set('blocktime', settings.blocktime);
 app.set('show_sent_received', settings.show_sent_received);
 app.set('logo', settings.logo);
 app.set('headerlogo', settings.headerlogo);

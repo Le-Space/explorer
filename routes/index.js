@@ -245,9 +245,23 @@ router.get('/mining', function(req, res) {
   // The window table is rendered here as well, for the same reason as the
   // tiles: the numbers are in the page before any chart script runs. The two
   // lookups do not depend on each other, so they run side by side.
-  var page = null, windows = null;
+  //
+  // Only one of them is the page, though. The tiles and the recent blocks are
+  // what a reader came for, and they must not wait on the year-long scan
+  // beside them: past WINDOWS_DEADLINE the page goes out without the windows,
+  // which the table and the charts both have a way of saying. A database in
+  // trouble then costs the reader two seconds, not the driver's full timeout.
+  var WINDOWS_DEADLINE = 2000;
+  var page = null, windows = null, sent = false;
+  var deadline = setTimeout(function() {
+    if (windows !== null) { return; }
+    windows = [];
+    done();
+  }, WINDOWS_DEADLINE);
   function done() {
-    if (page === null || windows === null) { return; }
+    if (sent || page === null || windows === null) { return; }
+    sent = true;
+    clearTimeout(deadline);
     res.render('mining', {
       active: 'mining',
       empty: page.empty,

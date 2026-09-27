@@ -109,7 +109,7 @@ block content
             tbody
               if !windows.length
                 tr
-                  td(colspan=4) #{settings.locale.mining_no_data}
+                  td(colspan=4) #{settings.locale.mining_windows_unavailable}
               each w in windows
                 tr
                   th(scope='row')= windowLabel(w.window)
@@ -195,15 +195,24 @@ block content
           targetMinutes: (settings.blocktime || 600) / 60,
           noHistory: settings.locale.mining_windows_no_history,
           noBlock: settings.locale.mining_windows_no_block,
+          unavailable: settings.locale.mining_windows_unavailable,
           windowLabels: windows.reduce(function (m, w) { m[w.window] = windowLabel(w.window); return m; }, {}),
           locale: lang === 'de' ? 'de-DE' : 'en-GB',
           symbol: settings.symbol
         };
       //- The window charts draw from the snapshot the table above was rendered
-      //- from, so the two can never disagree. `<` is escaped because this is
-      //- inlined into a script element.
+      //- from, so the two can never disagree.
+      //-
+      //- Both lines are escaped, but only one of them can need it: the rows are
+      //- numbers and eleven fixed keys, while the labels are translator-authored
+      //- and the same locale block already ships <code> in mining_windows_note.
+      //- A `</script>` reaching either one would end the element early.
+      -
+        function inlineJson(value) {
+          return JSON.stringify(value).replace(/</g, '\\u003c');
+        }
       script
-        != 'window.MINING_I18N = ' + JSON.stringify(miningI18n) + ';'
-        != 'window.MINING_WINDOWS = ' + JSON.stringify(windows).replace(/</g, '\\u003c') + ';'
+        != 'window.MINING_I18N = ' + inlineJson(miningI18n) + ';'
+        != 'window.MINING_WINDOWS = ' + inlineJson(windows) + ';'
       script(src='/vendor/chartjs/chart.umd-4.5.1.min.js')
       script(src='/javascripts/mining.js?v=' + settings.asset_version)

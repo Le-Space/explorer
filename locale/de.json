@@ -342,7 +342,8 @@
     "mining_target": "Ziel",
     "mining_windows_no_history": "zu wenig Historie",
     "mining_windows_no_block": "kein Block",
-    "mining_windows_note": "Jeder Zeitraum endet jetzt. Der Durchschnitt ist die Länge des Zeitraums geteilt durch die darin gefundenen Blöcke, eine noch offene Lücke zählt also mit: Eine Stunde nach dem letzten Block zeigt der Stundenwert 60 min. Balken mit weniger als sechs Blöcken sind heller. Die Hashrate folgt aus der Arbeit zwischen dem Block vor dem Zeitraum und dem neuesten, wie bei <code>getnetworkhashps</code>. Beide Diagramme sind logarithmisch skaliert.",
+    "mining_windows_unavailable": "Die Zeiträume waren gerade nicht abrufbar. Die Werte darüber sind davon nicht betroffen.",
+    "mining_windows_note": "Jeder Zeitraum endet jetzt. Der Durchschnitt ist die Länge des Zeitraums geteilt durch die darin gefundenen Blöcke, eine noch offene Lücke zählt also mit: Eine Stunde nach dem letzten Block zeigt der Stundenwert 60 min. Balken mit weniger als sechs Blöcken sind heller. Die Hashrate folgt aus der Arbeit zwischen dem Block vor dem Zeitraum und dem neuesten, wie bei <code>getnetworkhashps</code>. Beide Diagramme beginnen bei null, die Länge eines Balkens ist also sein Wert.",
     "mining_windows_fork_note": "Zeiträume, die vor den 11. September 2026 zurückreichen, enthalten die Monate vor dem Sicherheits-Fork bei Block 431.017, als ein Block rund drei Stunden brauchte. Ein Zeitraum, den die aufgezeichnete Historie nicht lückenlos abdeckt, hat keinen Balken und zeigt „zu wenig Historie“. <code>node scripts/backfill-blocks.js days 365</code> trägt ein Jahr nach.",
     "heavy_unavailable": "Diese Seite zeigt Abstimmungen über die Blockbelohnung. Sie gehört zu den „heavy\"-Erweiterungen, die diese Kette nicht führt — es liegen keine Daten dafür vor.",
 

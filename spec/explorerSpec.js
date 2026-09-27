@@ -352,7 +352,53 @@ describe('explorer', function() {
       rows[4].time = 1350;
       var w = one(500, rows);
       expect(w.hashrate).toBeCloseTo(1280 / 550, 9);
-      expect(w.hashrate).toEqual(lib.hashrate_from_blocks(rows.slice(4)));
+      // Not restated through hashrate_from_blocks: an expectation the code
+      // under test computes cannot disagree with it. The range it was taken
+      // over is pinned instead.
+      expect(w.from_height).toEqual(6);
+      expect(w.to_height).toEqual(10);
+    });
+
+    it('should end the hash rate at the newest block in the window, not at the tip', function() {
+      // Block 10 claims 1200, well before the boundary at 1500, so the window
+      // ends at block 9. Running the rate on to the tip anyway would divide
+      // the work of blocks 5 to 10, 1280, by 1800 - 1200 = 600 seconds, and
+      // report it beside a block count that describes neither end of it.
+      var rows = copy(blocks);
+      rows[9].time = 1200;
+      var w = one(500, rows);
+      expect(w.blocks).toEqual(4);
+      expect(w.to_height).toEqual(9);
+      expect(w.hashrate).toBeCloseTo(1024 / 400, 9);
+    });
+
+    it('should answer no hash rate where the work of a block was not recorded', function() {
+      // save_block writes `chainwork: block.chainwork || ''`, so a row can
+      // carry the empty string. The count and the average still hold; only
+      // the rate has nothing to stand on, and zero would be a claim.
+      var rows = copy(blocks).map(function(b) { b.chainwork = ''; return b; });
+      var w = one(500, rows);
+      expect(w.history).toBe(true);
+      expect(w.blocks).toEqual(5);
+      expect(w.avg_block_time).toEqual(100);
+      expect(w.hashrate).toBeNull();
+    });
+
+    it('should not call an empty window the chain\'s silence while the index lags', function() {
+      // Nothing since 1950, as above -- but the node says the chain is at 13
+      // and the rows stop at 10. "No block" would report our own outage as
+      // the chain's. With the tip in hand and reached, it is an answer again.
+      var behind = lib.block_windows(blocks, NOW, [{key: 'w', seconds: 50}], 13)[0];
+      expect(behind.history).toBe(false);
+      expect(behind.blocks).toEqual(0);
+      var caught_up = lib.block_windows(blocks, NOW, [{key: 'w', seconds: 50}], 10)[0];
+      expect(caught_up.history).toBe(true);
+      expect(caught_up.blocks).toEqual(0);
+      // A window that does hold blocks is unaffected: those rows are real
+      // whatever is missing after them.
+      var populated = lib.block_windows(blocks, NOW, [{key: 'w', seconds: 500}], 13)[0];
+      expect(populated.history).toBe(true);
+      expect(populated.blocks).toEqual(5);
     });
 
     it('should decide membership by time, not by height order', function() {

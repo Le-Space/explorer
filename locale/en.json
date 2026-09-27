@@ -340,7 +340,8 @@
     "mining_target": "Target",
     "mining_windows_no_history": "not enough history",
     "mining_windows_no_block": "no block",
-    "mining_windows_note": "Every window ends now. The average is the window divided by the blocks found in it, so a gap that is still open counts: an hour after the last block, the one-hour window reads 60 min. Bars resting on fewer than six blocks are drawn lighter. The hash rate is derived from the work between the block before the window and the newest one, as for <code>getnetworkhashps</code>. Both charts use a logarithmic scale.",
+    "mining_windows_unavailable": "The windows could not be read just now. The figures above are unaffected.",
+    "mining_windows_note": "Every window ends now. The average is the window divided by the blocks found in it, so a gap that is still open counts: an hour after the last block, the one-hour window reads 60 min. Bars resting on fewer than six blocks are drawn lighter. The hash rate is derived from the work between the block before the window and the newest one, as for <code>getnetworkhashps</code>. Both charts start at zero, so the length of a bar is its value.",
     "mining_windows_fork_note": "Windows reaching back before 11 September 2026 include the months before the security fork at block 431,017, when a block took about three hours. A window the recorded history does not cover without gaps has no bar and reads \"not enough history\". <code>node scripts/backfill-blocks.js days 365</code> fills in a year.",
     "heavy_unavailable": "This page shows voting on the block reward. It belongs to the \"heavy\" extensions, which this chain does not run, so there is no data for it.",
 
