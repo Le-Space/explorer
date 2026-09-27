@@ -536,7 +536,7 @@ hr { border-top-color: var(--ls-horizon); }
 /* An address is read character by character, and there is no room for the
    whole of one on a phone -- so it takes the identifier face and is allowed
    to scroll its own cell rather than widening the table. */
-.mining-table td:nth-child(3) {
+.mining-table .mining-address {
   font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: .82rem;
   max-width: 22rem;

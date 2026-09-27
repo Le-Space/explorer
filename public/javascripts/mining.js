@@ -1,5 +1,5 @@
 /**
-* The three charts on /mining.
+* The charts on /mining.
 *
 * Everything a reader needs is already in the HTML when this runs; these only
 * add the shape of it over time. So every failure here is silent in the sense
@@ -29,6 +29,11 @@
   var TEXT = css('--ls-stardust', '#A8B3C7');
   var GRID = css('--ls-horizon', '#232B3D');
 
+  // Units for rate(). Up here with the other constants because the window
+  // charts draw while this script is still being run, before the lines further
+  // down have assigned anything.
+  var SI = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
+
   Chart.defaults.color = TEXT;
   Chart.defaults.font.family = 'Inter, -apple-system, "Segoe UI", Roboto, sans-serif';
   Chart.defaults.maintainAspectRatio = false;
@@ -50,13 +55,24 @@
     return datePart(unix) + ' ' + timePart(unix);
   }
 
+  // `canvas` may be one canvas or several fed by the same request, in which
+  // case each of them says so.
   function say(canvas, message) {
-    var box = canvas && canvas.parentNode;
-    if (!box) { return; }
-    var p = document.createElement('p');
-    p.className = 'mining-note mining-empty';
-    p.textContent = message;
-    box.replaceChild(p, canvas);
+    [].concat(canvas).forEach(function (c) {
+      var box = c && c.parentNode;
+      if (!box) { return; }
+      // A chart that got far enough to register itself keeps listeners and a
+      // resize observer alive. Replacing the canvas alone leaves all of that
+      // running on a node no longer in the document.
+      try {
+        var live = Chart.getChart && Chart.getChart(c);
+        if (live) { live.destroy(); }
+      } catch (e) { /* nothing worth reporting to a reader */ }
+      var p = document.createElement('p');
+      p.className = 'mining-note mining-empty';
+      p.textContent = message;
+      box.replaceChild(p, c);
+    });
   }
 
   function load(url, onData, canvas) {
@@ -85,22 +101,196 @@
   //
   // Only the *axis* is shortened. The label a tooltip shows comes from the
   // dataset, so pointing at a bar still gives the full moment.
-  var narrow = (window.innerWidth || 1024) < 600;
+  // Asked each time a label is drawn rather than once at load: tick callbacks
+  // run again on every resize, so a window dragged narrow shortens its labels
+  // and one dragged back wide restores them.
+  function narrow() { return (window.innerWidth || 1024) < 600; }
   function xAxis(keep) {
     return {
       grid: {display: false},
       ticks: {
-        maxTicksLimit: narrow ? 4 : 8,
+        maxTicksLimit: narrow() ? 4 : 8,
         maxRotation: 0,
         autoSkip: true,
         callback: function (value) {
           var full = this.getLabelForValue(value);
-          if (!narrow) { return full; }
+          if (!narrow()) { return full; }
           var bits = String(full).split(' ');
           return keep === 'time' ? bits[bits.length - 1] : bits[0];
         }
       }
     };
+  }
+
+  // ---- block time and hash rate by window --------------------------------
+  // One bar per window, from the last hour to the last year, all ending now.
+  //
+  // Both value axes start at zero, so the length of a bar is its value. #31
+  // asked for logarithmic axes "as with #29", but #29 draws lines, where the
+  // axis only places a point; here the bar's length carries the meaning and a
+  // log axis cannot give it one. Chart.js makes that concrete: the bar
+  // controller forces beginAtZero, and a log scale honours it by dropping the
+  // axis minimum to the decade below the data -- so eight windows spanning
+  // 45 % drew as bars spanning 26 %, and letting one window fall a decade
+  // lengthened seven bars whose values had not moved.
+  //
+  // A bar resting on fewer than FEW blocks is drawn lighter, since an hour
+  // holds a handful and a reader should see how little stands behind it. A
+  // window without history, or without a single block, gets no bar. The
+  // tooltip and the table say which of the two it is.
+  //
+  // The rows come with the page (window.MINING_WINDOWS), the very snapshot the
+  // table was rendered from.
+  var winTimeCanvas = document.getElementById('chart-windows-blocktime');
+  var winRateCanvas = document.getElementById('chart-windows-hashrate');
+  var winCanvases = [winTimeCanvas, winRateCanvas].filter(Boolean);
+  function drawWindows(rows) {
+    if (!rows.some(function (r) { return r.blocks > 0; })) {
+      return say(winCanvases, T.noHistory || T.noData || 'No data.');
+    }
+    var FEW = 6;
+    var labels = rows.map(function (r) { return (T.windowLabels && T.windowLabels[r.window]) || r.window; });
+    function colours(colour) {
+      return rows.map(function (r) { return fade(colour, r.blocks < FEW ? 0.25 : 0.6); });
+    }
+    function status(i) {
+      var r = rows[i];
+      if (!r.history) { return T.noHistory || 'not enough history'; }
+      if (!r.blocks) { return T.noBlock || 'no block'; }
+      return (T.blocks || 'Blocks') + ': ' + Number(r.blocks).toLocaleString(LOCALE);
+    }
+    // Axis ticks round to whole minutes from ten upwards, tooltips keep one
+    // decimal, as the table does.
+    function minutesTick(v) {
+      return Number(v).toLocaleString(LOCALE, {maximumFractionDigits: v < 10 ? 1 : 0}) + ' min';
+    }
+    function minutesExact(v) {
+      return Number(v).toLocaleString(LOCALE, {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' min';
+    }
+    // A linear axis is labelled at every tick it draws, so the origin is the
+    // only one worth a word: "0.0 min" and "0.00 H/s" are noise.
+    function minutesAxisTick(v) { return v ? minutesTick(v) : '0'; }
+    // One unit for the whole hash-rate axis, taken from its largest bar.
+    // Formatted tick by tick, a scale reading 500 TH/s, 1.00 PH/s, 1.50 PH/s
+    // looks like it changes gear halfway up.
+    var peak = rows.reduce(function (m, r) { return Math.max(m, r.hashrate || 0); }, 0);
+    var unit = 0, div = 1;
+    while (peak / div >= 1000 && unit < SI.length - 1) { div *= 1000; unit++; }
+    function rateAxisTick(v) {
+      if (!v) { return '0'; }
+      var n = v / div;
+      return n.toLocaleString(LOCALE, {maximumFractionDigits: n < 10 ? 2 : 0}) + ' ' + SI[unit];
+    }
+    // The legend takes its swatch from the first bar, which is often a light
+    // one. It should show the colour a normal bar has.
+    function legendOf(colour) {
+      return {labels: {boxWidth: 12, usePointStyle: true, generateLabels: function (chart) {
+        var items = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+        if (items.length) { items[0].fillStyle = fade(colour, 0.6); }
+        return items;
+      }}};
+    }
+    // Each chart is built inside its own guard. Sharing one meant that a throw
+    // while building the second replaced the first -- which had drawn
+    // correctly -- with an apology.
+    //
+    // Only a bar that has a value gets its block count under the label. For an
+    // empty one the label already says why it is empty.
+    function countUnder(items) {
+      var it = items[0];
+      return it && it.parsed.y != null ? status(it.dataIndex) : '';
+    }
+
+    if (winTimeCanvas) {
+      try {
+        var target = T.targetMinutes || 10;
+        new Chart(winTimeCanvas, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: T.avgBlockTime || 'Average block time',
+                data: rows.map(function (r) { return r.avg_block_time == null ? null : r.avg_block_time / 60; }),
+                backgroundColor: colours(CYAN), borderColor: CYAN, borderWidth: 1
+              },
+              {
+                type: 'line',
+                label: (T.target || 'Target') + ' ' + minutesTick(target),
+                data: rows.map(function () { return target; }),
+                borderColor: CORAL, borderDash: [6, 4], borderWidth: 1.5,
+                pointRadius: 0, pointHoverRadius: 0, pointStyle: 'line', fill: false
+              }
+            ]
+          },
+          options: {
+            interaction: {mode: 'index', intersect: false},
+            scales: {
+              // No rotation of our own: Chart.js turns the labels only when they
+              // will not fit, and asks again on every resize. Deciding it here
+              // from window.innerWidth got it wrong at 1024 px, where these
+              // charts are half-width and "6 mo" ended one pixel before
+              // "12 mo" began.
+              x: {grid: {display: false}, ticks: {autoSkip: false}},
+              y: {type: 'linear', min: 0, grid: grid, ticks: {callback: minutesAxisTick}}
+            },
+            plugins: {
+              legend: legendOf(CYAN),
+              tooltip: {
+                filter: function (it) { return it.datasetIndex === 0; },
+                callbacks: {
+                  label: function (c) { return c.parsed.y == null ? status(c.dataIndex) : c.dataset.label + ': ' + minutesExact(c.parsed.y); },
+                  afterBody: countUnder
+                }
+              }
+            }
+          }
+        });
+      } catch (e) { say(winTimeCanvas, T.noData || 'No data.'); }
+    }
+
+    if (winRateCanvas) {
+      try {
+        new Chart(winRateCanvas, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: T.hashrate || 'Hash rate',
+              data: rows.map(function (r) { return r.hashrate; }),
+              backgroundColor: colours(CORAL), borderColor: CORAL, borderWidth: 1
+            }]
+          },
+          options: {
+            interaction: {mode: 'index', intersect: false},
+            scales: {
+              x: {grid: {display: false}, ticks: {autoSkip: false}},
+              y: {type: 'linear', min: 0, grid: grid, ticks: {callback: rateAxisTick}}
+            },
+            plugins: {
+              legend: {display: false},
+              tooltip: {callbacks: {
+                label: function (c) { return c.parsed.y == null ? status(c.dataIndex) : c.dataset.label + ': ' + rate(c.parsed.y, 2); },
+                afterBody: countUnder
+              }}
+            }
+          }
+        });
+      } catch (e) { say(winRateCanvas, T.noData || 'No data.'); }
+    }
+  }
+  // A missing snapshot is not fetched a second time. It is missing exactly when
+  // the server could not read the windows, and /ext/mining/windows is answered
+  // by whichever worker of the cluster picks it up -- possibly one whose cache
+  // is healthy. That is how the table could come to say "unavailable" above two
+  // charts drawing real bars, the one state this page is built never to reach.
+  // The endpoint stays, for readers who want the numbers directly.
+  if (winCanvases.length) {
+    if (window.MINING_WINDOWS && window.MINING_WINDOWS.length) {
+      try { drawWindows(window.MINING_WINDOWS); } catch (e) { say(winCanvases, T.noData || 'No data.'); }
+    } else {
+      say(winCanvases, T.unavailable || T.noData || 'No data.');
+    }
   }
 
   // ---- hash rate and difficulty over time -------------------------------
@@ -229,12 +419,15 @@
     }, minCanvas);
   }
 
-  var SI = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
-  function rate(h) {
+  // `digits` fixes the decimals, as a tooltip wants. Without it the axis
+  // style applies, two below ten and none above. Formatted for the page's
+  // language, like every other number on it.
+  function rate(h, digits) {
     var i = 0;
     h = h || 0;
     while (h >= 1000 && i < SI.length - 1) { h /= 1000; i++; }
-    return h.toFixed(h < 10 ? 2 : 0) + ' ' + SI[i];
+    var d = digits == null ? (h < 10 ? 2 : 0) : digits;
+    return h.toLocaleString(LOCALE, {minimumFractionDigits: d, maximumFractionDigits: d}) + ' ' + SI[i];
   }
   function compact(n) {
     try { return Number(n).toLocaleString(LOCALE, {notation: 'compact', maximumFractionDigits: 1}); }
