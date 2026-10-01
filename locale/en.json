@@ -305,7 +305,7 @@
     "mining_chart_network": "Hash rate and difficulty, 7 days",
     "mining_chart_rewards": "Reward per block, 24 hours",
     "mining_chart_miners": "Blocks per coinbase address, 24 hours",
-    "mining_log_note": "Both axes are logarithmic: within a week these values span more than thirtyfold, and a linear axis would flatten most of the curve.",
+    "mining_log_note": "Both axes are logarithmic. The narrow dips in the difficulty are the emergency valve in the adjustment: after an hour without a block, the next one may be four times easier. The hash rate does not show them, because it is averaged over 120 blocks. Drawn linearly, little of the rest would be left.",
     "mining_miners_note": "What is counted is the payout address from the coinbase, not the operator: one operator can use many addresses, and a pool pays out to many.",
     "mining_fees_note": "Fees sit on their own axis. Against the block subsidy they are vanishingly small on this chain and would otherwise be invisible.",
     "mining_table_recent": "Recent blocks",

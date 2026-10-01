@@ -307,7 +307,7 @@
     "mining_chart_network": "Hashrate und Schwierigkeit, 7 Tage",
     "mining_chart_rewards": "Ertrag je Block, 24 Stunden",
     "mining_chart_miners": "Blöcke je Coinbase-Adresse, 24 Stunden",
-    "mining_log_note": "Beide Achsen sind logarithmisch: Die Werte schwanken innerhalb einer Woche um mehr als das Dreißigfache, linear wäre der größte Teil der Kurve plattgedrückt.",
+    "mining_log_note": "Beide Achsen sind logarithmisch. Die schmalen Einbrüche in der Schwierigkeit sind das Notventil der Anpassung: Nach einer Stunde ohne Block darf der nächste viermal leichter sein. Die Hashrate zeigt sie nicht, weil sie über 120 Blöcke gemittelt wird. Linear gezeichnet bliebe vom Rest der Kurven wenig übrig.",
     "mining_miners_note": "Gezählt wird die Auszahlungsadresse aus der Coinbase, nicht der Betreiber: Ein Betreiber kann viele Adressen benutzen, und ein Pool zahlt an viele.",
     "mining_fees_note": "Die Gebühren stehen auf einer eigenen Achse. Gegen die Blocksubvention sind sie auf dieser Kette verschwindend klein und wären sonst unsichtbar.",
     "mining_table_recent": "Jüngste Blöcke",
