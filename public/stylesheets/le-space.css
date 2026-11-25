@@ -168,6 +168,9 @@ hr { border-top-color: var(--ls-horizon); }
   color: #6E7A8F;
   font-size: 0.72rem;
   text-decoration: none;
+}
+/* The rule separates it from an operator's credit; standing alone it needs none. */
+.footer-credit-link + .footer-upstream {
   padding-left: 0.55rem;
   border-left: 1px solid var(--ls-horizon);
 }

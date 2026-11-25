@@ -9,8 +9,8 @@ html(lang=lang)
     title= (typeof pageTitle !== 'undefined' && pageTitle) ? (pageTitle + ' \u2014 ' + settings.title) : settings.title
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    //- Brand icons and fonts (docs/le-space-brand in Le-Space/landing).
-    //- Inter carries the UI, JetBrains Mono the identifiers -- hashes, addresses
+    //- Icons come from the instance's settings (favicon, icons); the fonts
+    //- ship with the theme. Inter carries the UI, JetBrains Mono the identifiers -- hashes, addresses
     //- and names are read character by character.
     //- Link preview for Twitter/X, Telegram, LinkedIn, Signal, Slack ... They all
     //- read Open Graph; Twitter reads its own names as well. A page passes `meta`
@@ -21,8 +21,10 @@ html(lang=lang)
     - var ogDesc = m.description || (settings.coin + ' ' + settings.locale.ex_title)
     - var ogUrl = base + (m.path || '/')
     //- The card carries a German or English line, so it follows the page
-    //- language like everything else.
-    - var ogImage = base + (m.image || ('/images/og-explorer-' + (lang === 'de' ? 'de' : 'en') + '.png'))
+    //- language like everything else. It is the operator's: without
+    //- settings.og_image the preview has no picture at all.
+    - var ogCard = settings.og_image ? settings.og_image.replace('{lang}', lang === 'de' ? 'de' : 'en') : ''
+    - var ogImage = (m.image || ogCard) ? base + (m.image || ogCard) : ''
     //- Declaring the size lets LinkedIn and Facebook lay out the wide card on
     //- the first scrape, before they have fetched the image; without it they
     //- tend to fall back to the small square one -- and LinkedIn caches that
@@ -39,27 +41,32 @@ html(lang=lang)
     meta(property='og:title', content=ogTitle)
     meta(property='og:description', content=ogDesc)
     meta(property='og:url', content=ogUrl)
-    meta(property='og:image', content=ogImage)
-    if ogImageW && ogImageH
-      meta(property='og:image:width', content=ogImageW)
-      meta(property='og:image:height', content=ogImageH)
-    if ogImageAlt
-      meta(property='og:image:alt', content=ogImageAlt)
+    if ogImage
+      meta(property='og:image', content=ogImage)
+      if ogImageW && ogImageH
+        meta(property='og:image:width', content=ogImageW)
+        meta(property='og:image:height', content=ogImageH)
+      if ogImageAlt
+        meta(property='og:image:alt', content=ogImageAlt)
     meta(property='og:locale', content=(lang === 'de' ? 'de_DE' : 'en_US'))
     //- The only tag here without an Open Graph equivalent: it picks the layout.
     //- Telegram and LinkedIn read Open Graph only and ignore the rest of these;
     //- X prefers them and falls back to Open Graph for anything missing.
-    meta(name='twitter:card', content='summary_large_image')
+    //- Without a picture the large card would be an empty frame.
+    meta(name='twitter:card', content=(ogImage ? 'summary_large_image' : 'summary'))
     meta(name='twitter:title', content=ogTitle)
     meta(name='twitter:description', content=ogDesc)
-    meta(name='twitter:image', content=ogImage)
-    if ogImageAlt
-      meta(name='twitter:image:alt', content=ogImageAlt)
+    if ogImage
+      meta(name='twitter:image', content=ogImage)
+      if ogImageAlt
+        meta(name='twitter:image:alt', content=ogImageAlt)
     meta(name='description', content=ogDesc)
     link(rel='canonical', href=ogUrl)
     link(rel='icon', href='/favicon.ico', sizes='48x48')
-    link(rel='icon', href='/favicon-32x32.png', type='image/png', sizes='32x32')
-    link(rel='apple-touch-icon', href='/apple-touch-icon.png')
+    if settings.icons && settings.icons.png32
+      link(rel='icon', href=settings.icons.png32, type='image/png', sizes='32x32')
+    if settings.icons && settings.icons.apple
+      link(rel='apple-touch-icon', href=settings.icons.apple)
     //- Inter and JetBrains Mono from here, not from Google: a font request
     //- carries the reader's address to whoever serves it, and nothing about
     //- this page needs a third party to know who is reading it.
@@ -188,8 +195,12 @@ html(lang=lang)
         //- explorer. The name also says which chain this explores, which the
         //- mark alone never could.
         if typeof settings.headerlogo !== "undefined" && settings.headerlogo && settings.headerlogo.length > 1
-          a.navbar-brand(href=(settings.headerlogo_url || '/'), title=settings.headerlogo_url ? 'le-space.de' : settings.title)
-            img(src=settings.headerlogo, alt='Le-Space', style='width:153px;height:45px;')
+          //- The tooltip names where the logo leads: the bare host of an outside
+          //- link, the title when it stays home.
+          - var logoLeadsOut = settings.headerlogo_url && settings.headerlogo_url !== '/'
+          - var logoTitle = logoLeadsOut ? settings.headerlogo_url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') : settings.title
+          a.navbar-brand(href=(settings.headerlogo_url || '/'), title=logoTitle)
+            img(src=settings.headerlogo, alt=(settings.headerlogo_alt || settings.title), style='width:153px;height:45px;')
           a.navbar-product(href='/', title=settings.title)=settings.headerlabel
         else
           a.navbar-brand(href='/')
@@ -401,11 +412,21 @@ html(lang=lang)
         //- mark and name linking together as one signature, 22px minimum. It
         //- belongs here and not in the header -- there the plain mark is the
         //- logo, and the heart is a gesture rather than a logo.
+        //- Only an operator who sets settings.credit is credited; without it
+        //- the upstream line below stands alone.
         .footer-credit
-          span.footer-credit-lead=settings.locale.footer_built_with
-          a.footer-credit-link(href='https://le-space.de', target='_blank', rel='noopener')
-            img.footer-credit-mark(src='/images/le-space-mark-heart.svg', alt='', width='22', height='22')
-            span Le Space
+          if settings.credit && settings.credit.name
+            span.footer-credit-lead=settings.locale.footer_built_with
+            if settings.credit.url
+              a.footer-credit-link(href=settings.credit.url, target='_blank', rel='noopener')
+                if settings.credit.mark
+                  img.footer-credit-mark(src=settings.credit.mark, alt='', width='22', height='22')
+                span=settings.credit.name
+            else
+              span.footer-credit-link
+                if settings.credit.mark
+                  img.footer-credit-mark(src=settings.credit.mark, alt='', width='22', height='22')
+                span=settings.credit.name
           //- The upstream this is forked from. Its BSD licence wants the notice
           //- kept in source -- LICENSE carries it -- and forbids using the name
           //- to promote derived work. So the credit stays, quietly, and the
@@ -417,7 +438,12 @@ html(lang=lang)
         .nav.justify-content-end
           //- Which build this instance runs, beside what the chain is doing:
           //- the same kind of question, so the same kind of chip. It links to
-          //- the release it was cut from.
-          a.badge.badge-pill.nav-link.footer-version(href='https://github.com/Le-Space/explorer/releases/tag/v' + settings.version, target='_blank', rel='noopener', title=settings.locale.footer_version_title)= 'v' + settings.version
+          //- the release it was cut from, in the repository repo_url names;
+          //- without one it is a plain chip rather than a link to our releases.
+          if settings.repo_url
+            - var releaseUrl = settings.repo_url.replace(/\/+$/, '') + '/releases/tag/v' + settings.version
+            a.badge.badge-pill.nav-link.footer-version(href=releaseUrl, target='_blank', rel='noopener', title=settings.locale.footer_version_title)= 'v' + settings.version
+          else
+            span.badge.badge-pill.nav-link.footer-version= 'v' + settings.version
           label#lblBlockcount.badge.badge-pill.nav-link
           label#lblConnections.badge.badge-pill.nav-link

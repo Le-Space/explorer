@@ -19,6 +19,13 @@ character by character -- hashes, addresses, names. The theme lives in
 the part above is the untouched dark base, so the base can be replaced wholesale
 when Bootswatch moves on.
 
+Everything that names an operator is instance configuration, not code: header
+logo, footer credit, favicons, link-preview card, imprint and privacy notice
+are all read from `settings.json`. Left out, each one falls back to a neutral
+default -- the Doichain mark as icon, no credit, no preview picture, and no
+imprint at all -- so a copy that somebody else runs never shows Le-Space's
+details. `settings.json.template` carries the Le-Space values.
+
 **Two languages, chosen per visitor.** The upstream explorer serves one language
 per instance. Here every `locale/<code>.json` that parses is offered, and the
 language of a request is decided in this order:

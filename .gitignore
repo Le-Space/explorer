@@ -46,3 +46,6 @@ package-lock.json
 !public/images/le-space-*.png
 !public/images/og-*.png
 !public/themes/le-space/thumbnail.png
+# The neutral default icons, drawn from the Doichain logo (public/images/logo.svg).
+!public/images/doichain/favicon.ico
+!public/images/doichain/*.png
