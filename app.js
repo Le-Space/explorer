@@ -349,6 +349,12 @@ app.set('headerlogo', settings.headerlogo);
 app.set('headerlogo_url', settings.headerlogo_url);
 app.set('headerlabel', settings.headerlabel || settings.coin);
 app.set('repo_url', settings.repo_url);
+// Everything else that names an operator. Each one switches its part of the
+// layout off while empty -- see lib/settings.js for the defaults.
+app.set('headerlogo_alt', settings.headerlogo_alt);
+app.set('credit', settings.credit);
+app.set('icons', settings.icons);
+app.set('og_image', settings.og_image);
 // The operator's details, read by the footer and by views/legal.pug. Without
 // this line the routes still answer -- they read lib/settings directly -- but
 // the view sees no `settings.legal` and the imprint throws on its first field.

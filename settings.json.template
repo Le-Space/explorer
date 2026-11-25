@@ -19,6 +19,8 @@
   "logo": "/images/le-space-mark-dark.svg",
   // Optional header logo - change false to e.g. "/images/headerlogo.png"
   "headerlogo": "/images/le-space-logo-horizontal-dark.svg",
+  // What a screen reader says for that logo; empty falls back to the title.
+  "headerlogo_alt": "Le-Space",
   // The logo is the company mark and leaves for the company site; the
   // product name beside it stays the way back to the explorer.
   "headerlogo_url": "https://le-space.de",
@@ -28,9 +30,26 @@
   // Source link in the footer. Point it at YOUR fork if you run a modified
   // copy; empty hides the icon.
   "repo_url": "https://github.com/Le-Space/explorer",
+  // The footer credit, "built with <mark> <name>". Leave "name" empty and no
+  // operator is credited -- which is also the default when this block is
+  // missing. A fork credits itself here, or nobody.
+  "credit": {
+    "name": "Le Space",
+    "url": "https://le-space.de",
+    "mark": "/images/le-space-mark-heart.svg"
+  },
 
-  // favicon
+  // favicon, served at /favicon.ico. Without this key: the Doichain mark.
   "favicon": "public/favicon.ico",
+  // PNG favicon and home-screen icon. Without this block: the Doichain mark.
+  "icons": {
+    "png32": "/favicon-32x32.png",
+    "apple": "/apple-touch-icon.png"
+  },
+  // Link-preview card for social media; "{lang}" becomes "de" or "en". The
+  // cards in public/images carry the Le-Space wordmark, so a fork replaces
+  // them or leaves this empty -- then previews show text only.
+  "og_image": "/images/og-explorer-{lang}.png",
 
   // Uses bootswatch themes (http://bootswatch.com/)
   // Valid options:
